@@ -25,7 +25,7 @@ tracking down the cause of the bottleneck.
 <p>
 Although this is ostensibly a post about using BCC, I also wanted to illustrate my approach to debugging in a methodical manner; it was a new experience to me
 and I hope that others will benefit from it! <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
-Given that this was part of a real job interview process, some details are intentionally obscured.
+Given that this was part of a real job interview process, some details are intentionally obscured such as the exact renaming of the services in the text itself.
 </p>
 </div>
 
@@ -66,7 +66,7 @@ and loads it into a transaction log.
 <div class="outline-text-4" id="text-orgac8b1b9">
 <p>
 I started off with seeing how much traffic the dummy service was generating, although the exact data flowing into database via the dummy service would be different since the
-query from source would then be written to the operation log in a different format, but this gave a baseline for what kind of throughput
+query from the dummy service would then be written to the operation log in a different format, but this gave a baseline for what kind of throughput
 we should expect as well as investigating what the effects are when network troubles occur.
 </p>
 
@@ -77,8 +77,9 @@ After looking around the available tcp tools, I found tcptop to be the best tool
 
 
 <p>
-Next, I looked at the processes responsible for the most latency across the entire system. The process with the highest latency syscalls was Python (the dummy service).
-This was surprising to me, to say the least. Diving a little bit deeper, I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments, it wasn't looking
+Next, I looked at the processes responsible for the most latency across the entire system. Given that the computer was non-idle, syscount -LP was fairly noisy across
+the entire system, however, I did see that Python and the database were pretty high up there. Python being that high was surprising to me, to say the least. Diving a little bit deeper,
+I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments, it wasn't looking
 at a particular file descriptor. The linked man page has something to say about this:
 </p>
 <blockquote>
@@ -111,7 +112,8 @@ the consistency of syncs, I didn't see any problems with the database.
 </p>
 
 <p>
-Just to make sure, I looked at the number of current operations to the database, it was constantly about 5 or 6, so everything checked out here!
+Just to make sure, I looked at the number of current operations to the database, it was constantly about 5 or 6, so everything checked out here! Even though the mystery of Python's
+sleep unsolved, it did not seem like the problem I was looking for.
 </p>
 </div>
 </div>
@@ -143,8 +145,15 @@ coming from epoll_wait, this time, about a third of a second; this seemed a bit 
 </p>
 
 <p>
-Now we turn ourselves back to the database; by how much is the operation log growing per second and compare that to how much data is going to the loader service over tcp.
-As we can see, the operation log is growing way faster than what's being sent over TCP. So this asks the question, what is determining by how much traffic is being consumed by the loader
+Now we turn ourselves back to the database; by how much is the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
+the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
+left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that roughly 5 times as much data was running
+through the operation log as going through the loader service.
+</p>
+
+<p>
+<img src="file:///Users/brendangood/Desktop/Screen Shot 2018-04-10 at 12.55.35 PM.png" alt="Screen Shot 2018-04-10 at 12.55.35 PM.png" />
+So this asks the question, what is determining by how much traffic is being consumed by the loader
 process? We go back to the source. Conveniently for me, there was a class called DatabaseReader; perfect! Looking into the details of how it's polled, I could see that there was this batchSize
 variable. Hmm, curious. Well, what does the batchSize default to? I found the config file and the default batch size is 10. That's struck me as quite low given how quickly the log was growing.
 Bumping that batchSize up and rebuilding the container, I could see much more data running through!
