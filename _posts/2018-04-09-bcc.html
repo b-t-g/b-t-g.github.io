@@ -45,14 +45,14 @@ given that I could get the whole pipeline on one host, I had easy access to syst
 <h3 id="org837830f">Architecture</h3>
 <div class="outline-text-3" id="text-org837830f">
 <p>
-The architecture was fairly straightforward: A dummy service (written in Python) writes to a database and there's a loader service (written in Java) that loads from the operation log of the database
-into a transaction log.
+The architecture was fairly straightforward: A dummy service (written in Python) writes to a database and there's a loader service (written in Java) that reads from the operation log of the database
+and loads it into a transaction log.
 </p>
 
 <p>
-\\[
+\[
 \text{Dummy}\to\ \text{Database}\ \to \text{Loader}\ \to\ \text{Transaction Log}
-\\]
+\]
 </p>
 </div>
 </div>
