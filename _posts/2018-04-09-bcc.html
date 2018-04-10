@@ -152,7 +152,6 @@ through the operation log as going through the loader service.
 </p>
 
 <p>
-<img src="file:///Users/brendangood/Desktop/Screen Shot 2018-04-10 at 12.55.35 PM.png" alt="Screen Shot 2018-04-10 at 12.55.35 PM.png" />
 So this asks the question, what is determining by how much traffic is being consumed by the loader
 process? We go back to the source. Conveniently for me, there was a class called DatabaseReader; perfect! Looking into the details of how it's polled, I could see that there was this batchSize
 variable. Hmm, curious. Well, what does the batchSize default to? I found the config file and the default batch size is 10. That's struck me as quite low given how quickly the log was growing.
