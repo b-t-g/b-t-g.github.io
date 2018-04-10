@@ -76,15 +76,20 @@ After looking around the available tcp tools, I found tcptop to be the best tool
 
 
 <div class="figure">
-<p><img src="https://b-t-g.github.com/assets/global_latency.png" alt="global_latency.png" />
+<p><img src="https://b-t-g.github.com/assets/tcp_before.png" alt="tcp_before.png" />
 </p>
 </div>
 
+
 <p>
 Next, I looked at the processes responsible for the most latency across the entire system. Given that the computer was non-idle, syscount -LP was fairly noisy across
-the entire system, however, I did see that Python and the database were pretty high up there. Python being that high was surprising to me, to say the least. Diving a little bit deeper,
-I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments, it wasn't looking
-at a particular file descriptor. The linked man page has something to say about this:
+the entire system, however, I did see that Python and the database were pretty high up there.
+</p>
+
+<p>
+<img src="https://b-t-g.github.com/assets/global_latency.png" alt="global_latency.png" />
+Python being that high was surprising to me, to say the least. Diving a little bit deeper, I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments,
+it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
 </p>
 <blockquote>
 <p>
@@ -153,6 +158,7 @@ Now we turn ourselves back to the database; by how much is the operation log gro
 the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
 left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that roughly 5 times as much data was running
 through the operation log as going through the loader service.
+<img src="https://b-t-g.github.com/assets/biotop.png" alt="biotop.png" />
 </p>
 
 <p>
@@ -161,6 +167,12 @@ process? We go back to the source. Conveniently for me, there was a class called
 variable. Hmm, curious. Well, what does the batchSize default to? I found the config file and the default batch size is 10. That's struck me as quite low given how quickly the log was growing.
 Bumping that batchSize up and rebuilding the container, I could see much more data running through!
 </p>
+
+
+<div class="figure">
+<p><img src="https://b-t-g.github.com/assets/tcp_after.png" alt="tcp_after.png" />
+</p>
+</div>
 </div>
 </div>
 </div>
