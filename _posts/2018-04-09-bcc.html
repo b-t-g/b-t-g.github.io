@@ -1,0 +1,173 @@
+---
+date: 2018-04-09
+tags:
+- bcc
+author: Brendan Good
+layout: post
+title: BCC
+excerpt: bcc
+categories:
+- bcc
+---
+<div id="outline-container-org14c6766" class="outline-2">
+<h2 id="org14c6766">Using BCC to track down a data pipeline bottleneck</h2>
+<div class="outline-text-2" id="text-org14c6766">
+<p>
+As part of a job interview, I was tasked with finding issues in a data pipeline in a Docker environment. Because of certain subtleties
+of the pipeline, using Linux was a constraint. In light of that, I saw a great opportunity to use the <a href="https://github.com/iovisor/bcc">BCC toolkit</a> that I had heard so much
+about and, more generally, use the debugging approach espoused by Bryan Cantrill and others of "ask questions of the system to constrain
+hypotheses about what's going on to understand your system" as a way to use debugging to better understand the system, instead of the more
+typical style of "debugging to make the badness go away". The end result was a much better understanding of an entirely foreign system and
+confidence that the issue I had found was, in fact, the correct issue. There were some other issues with the pipeline but I'll focus on
+tracking down the cause of the bottleneck.
+</p>
+
+<p>
+Although this is ostensibly a post about using BCC, I also wanted to illustrate my approach to debugging in a methodical manner; it was a new experience to me
+and I hope that others will benefit from it! <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+Given that this was part of a real job interview process, some details are intentionally obscured.
+</p>
+</div>
+
+<div id="outline-container-orgabd60ca" class="outline-3">
+<h3 id="orgabd60ca">Difficulties posed by Docker</h3>
+<div class="outline-text-3" id="text-orgabd60ca">
+<p>
+It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
+</p>
+
+<p>
+kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>). However, a lot
+of very meaningful information can be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use. However,
+given that I could get the whole pipeline on one host, I had easy access to system wide statistics such as TCP traffic and latency; so it's not all doom and gloom.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org837830f" class="outline-3">
+<h3 id="org837830f">Architecture</h3>
+<div class="outline-text-3" id="text-org837830f">
+<p>
+The architecture was fairly straightforward: A dummy service (written in Python) writes to a database and there's a loader service (written in Java) that loads from the operation log of the database
+into a transaction log.
+</p>
+
+<p>
+\[
+\text{Dummy}\to\ \text{Database}\ \to \text{Loader}\ \to\ \text{Transaction Log}
+\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4c656ae" class="outline-3">
+<h3 id="org4c656ae">Starting point</h3>
+<div class="outline-text-3" id="text-org4c656ae">
+</div>
+<ul class="org-ul">
+<li><a id="orgac8b1b9"></a>Question: What's the TCP throughput?<br />
+<div class="outline-text-4" id="text-orgac8b1b9">
+<p>
+I started off with seeing how much traffic the dummy service was generating, although the exact data flowing into database via the dummy service would be different since the
+query from source would then be written to the operation log in a different format, but this gave a baseline for what kind of throughput
+we should expect as well as investigating what the effects are when network troubles occur.
+</p>
+
+<p>
+After looking around the available tcp tools, I found tcptop to be the best tool for this particular job.
+</p>
+
+
+
+<p>
+Next, I looked at the processes responsible for the most latency across the entire system. The process with the highest latency syscalls was Python (the dummy service).
+This was surprising to me, to say the least. Diving a little bit deeper, I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments, it wasn't looking
+at a particular file descriptor. The linked man page has something to say about this:
+</p>
+<blockquote>
+<p>
+Some code calls select() with all three sets empty, nfds zero, and a non-NULL timeout as a fairly portable way to sleep with subsecond precision.
+</p>
+</blockquote>
+<p>
+So Python is sleeping for half a second for &#x2013; some reason? Well, this prompts another question; is this responsible for latency downstream? Let's look at the database.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgaf75fd0" class="outline-3">
+<h3 id="orgaf75fd0">Database</h3>
+<div class="outline-text-3" id="text-orgaf75fd0">
+<p>
+Running ext4slower from the bcc-toolkit library, I was able to see that the latency for syncing the log had some of the highest latency and contained most of
+the filesystem operations taking over 1 ms. The exact time varied wildly, the distribution seemed to be roughly bimodal with 8 milliseconds and about 30 milliseconds being the most common.
+I saw syncs take as long as over 150 milliseconds, but they were atypical. The syncs were relatively consistent in the sense that they were never idle (although their latencies did vary),
+this did not seem like a bottleneck.
+</p>
+
+<p>
+But maybe there was latency elsewhere? Once again, relying on good 'ol syscount -L -p &lt;PID of DB&gt;, I saw quite a bit of time spent in select again (this time about a quarter of a second).
+Once again using strace to see the arguments of select Using lsof -i -a -p &lt;PID of DB&gt;, I could see that it was waiting on file descriptors associated with the dummy service. However, given
+the consistency of syncs, I didn't see any problems with the database.
+</p>
+
+<p>
+Just to make sure, I looked at the number of current operations to the database, it was constantly about 5 or 6, so everything checked out here!
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdfe3954" class="outline-3">
+<h3 id="orgdfe3954">Loader</h3>
+<div class="outline-text-3" id="text-orgdfe3954">
+<p>
+Now here's where things get a bit more interesting.
+Checking for the highest latency syscalls running this:
+</p>
+<pre class="example">
+./syscount -L -p &lt;PID of loader&gt;
+</pre>
+<p>
+most of the latency was coming from epoll<sub>wait</sub>, but about a third of a millisecond. Digging around in the source code, I could see that the loader service was polling the database's operation log
+In light of this, that amount of latency makes sense since that's about the latency one could expect for a request. Indeed, it seemed like most of the workload was from reading,
+receiving, and send/write syscalls. This ultimately led me to strongly consider that this could be a bottleneck.
+</p>
+
+<p>
+Running top, this process was consuming about 100% CPU, in an attempt to get some more information about what it was doing, I got a thread dump using jstack -l &lt;PID of loader process&gt;. Unfortunately,
+the workload was coming from short-lived threads, not much information was gained from it (other than there being quite a few threads).
+</p>
+
+<p>
+However, I could to test this hypothesis further by now turning my attention to the log. Checking for high latency syscalls in the same way, I noticed that most of the latency was again
+coming from epoll<sub>wait</sub>, this time, about a third of a second; this seemed a bit too long for me This led me to believe that the loader service is, indeed the bottleneck.
+</p>
+
+<p>
+Now we turn ourselves back to the database; by how much is the operation log growing per second and compare that to how much data is going to the loader service over tcp.
+As we can see, the operation log is growing way faster than what's being sent over TCP. So this asks the question, what is determining by how much traffic is being consumed by the loader
+process? We go back to the source. Conveniently for me, there was a class called DatabaseReader; perfect! Looking into the details of how it's polled, I could see that there was this batchSize
+variable. Hmm, curious. Well, what does the batchSize default to? I found the config file and the default batch size is 10. That's struck me as quite low given how quickly the log was growing.
+Bumping that batchSize up and rebuilding the container, I could see much more data running through!
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+In light of that, I'll try to talk about approaches that weren't successful, to help highlight how I approached the problem, but I'll inevitably exclude some things I tried but didn't work.
+Also, to have some sense of narrative, the exact ordering will differ.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+Although I suspect the reason you can get DTrace working with zones is because a zone is a first-class construct in Illumos whereas that is not the case with Docker and Linux.
+</p></div></div>
+
+
+</div>
+</div>
