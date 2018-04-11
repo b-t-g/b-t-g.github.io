@@ -36,9 +36,9 @@ will benefit from it! <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup
 <div class="outline-text-3" id="text-orgabd60ca">
 <p>
 It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
-kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>). However, a lot
-of very meaningful information can be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use. However,
-having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency; so it's not all doom and gloom.
+kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>). A lot
+of very meaningful information can still be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use.
+Having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency, so it's not all doom and gloom.
 </p>
 </div>
 </div>
@@ -86,7 +86,7 @@ syscall is made) and the -P flag (aggregate by processes and not syscalls), was 
 </pre>
 </div>
 <p>
-Given that the computer was running things other than just the pipeline, it was fairly noisy across the entire system, however, I did see that Python and the database were pretty high up there.
+Given that the computer was running things other than just the pipeline, it was fairly noisy across the entire system, but I did see that Python and the database were pretty high up there.
 </p>
 
 
@@ -174,7 +174,7 @@ waiting for data, which would manifest in fewer syncs of the operation log. Howe
 </p>
 
 <p>
-Just to make sure that the database wasn't a problem, I looked at the number of current operations to the database, it was constantly about 5 or 6, so everything checked out here!
+Just to make sure that the database wasn't a problem, I looked at the number of current operations to the database, it was constantly 5 or 6, so everything checked out here!
 Even though the mystery of Python's sleep was still unsolved, it did not seem like the problem I was looking for.
 </p>
 </div>
@@ -208,7 +208,7 @@ Unfortunately, the workload was coming from short-lived threads, not much inform
 </p>
 
 <p>
-However, I could to test the hypothesis that the loader was the bottleneck by turning my attention to the transaction log. Checking for high latency syscalls in the same way,
+I could still test the hypothesis that the loader was the bottleneck by turning my attention to the transaction log. Checking for high latency syscalls in the same way,
 I noticed that most of the latency was again coming from epoll_wait, this time, about a third of a second; this seemed a bit too long for me and led me to believe that the loader service is,
 indeed the bottleneck.
 </p>
