@@ -76,7 +76,7 @@ After looking around the available tcp tools, I found tcptop to be the best tool
 
 
 <div class="figure">
-<p><img src="https://b-t-g.github.com/assets/tcp_before.png" alt="tcp_before.png" />
+<p><img src="https://b-t-g.github.io/assets/tcp_before.png" alt="tcp_before.png" />
 </p>
 </div>
 
@@ -88,7 +88,7 @@ the entire system, however, I did see that Python and the database were pretty h
 
 
 <div class="figure">
-<p><img src="https://b-t-g.github.com/assets/global_latency.png" alt="global_latency.png" />
+<p><img src="https://b-t-g.github.io/assets/global_latency.png" alt="global_latency.png" />
 </p>
 </div>
 <p>
@@ -117,6 +117,12 @@ the filesystem operations taking over 1 ms. The exact time varied wildly, the di
 I saw syncs take as long as over 150 milliseconds, but they were atypical. The syncs were relatively consistent in the sense that they were never idle (although their latencies did vary),
 this did not seem like a bottleneck.
 </p>
+
+
+<div class="figure">
+<p><img src="https://b-t-g.github.io/assets/ext4slower.png" alt="ext4slower.png" />
+</p>
+</div>
 
 <p>
 But maybe there was latency elsewhere? Once again, relying on good 'ol syscount -L -p &lt;PID of DB&gt;, I saw quite a bit of time spent in select again (this time about a quarter of a second).
@@ -162,7 +168,7 @@ Now we turn ourselves back to the database; by how much is the operation log gro
 the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
 left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that roughly 5 times as much data was running
 through the operation log as going through the loader service.
-<img src="https://b-t-g.github.com/assets/biotop.png" alt="biotop.png" />
+<img src="https://b-t-g.github.io/assets/biotop.png" alt="biotop.png" />
 </p>
 
 <p>
@@ -174,7 +180,7 @@ Bumping that batchSize up and rebuilding the container, I could see much more da
 
 
 <div class="figure">
-<p><img src="https://b-t-g.github.com/assets/tcp_after.png" alt="tcp_after.png" />
+<p><img src="https://b-t-g.github.io/assets/tcp_after.png" alt="tcp_after.png" />
 </p>
 </div>
 </div>
