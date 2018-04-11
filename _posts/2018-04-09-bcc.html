@@ -82,7 +82,14 @@ After looking around the available tcp tools, I found tcptop to be the best tool
 
 
 <p>
-Next, I looked at the processes responsible for the most latency across the entire system. Given that the computer was non-idle, syscount -LP was fairly noisy across
+Next, I looked at the processes responsible for the most latency across the entire system. Given that the computer was non-idle,
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">syscount -LP
+</pre>
+</div>
+<p>
+was fairly noisy across
 the entire system, however, I did see that Python and the database were pretty high up there.
 </p>
 
@@ -92,7 +99,25 @@ the entire system, however, I did see that Python and the database were pretty h
 </p>
 </div>
 <p>
-Python being that high was surprising to me, to say the least. Diving a little bit deeper, I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments,
+Python being that high was surprising to me, to say the least. So I decided to run
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">./syscount -L -i 1 -p $(pgrep python3)
+</pre>
+</div>
+
+<p>
+Where the -i flag just means "print output every second" and -p means "for this PID only".
+</p>
+
+
+<div class="figure">
+<p><img src="https://b-t-g.github.io/assets/python_latency.png" alt="python_latency.png" />
+</p>
+</div>
+
+<p>
+Diving a little bit deeper, I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments,
 it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
 </p>
 <blockquote>
@@ -126,7 +151,15 @@ this did not seem like a bottleneck.
 
 <p>
 But maybe there was latency elsewhere? Once again, relying on good 'ol syscount -L -p &lt;PID of DB&gt;, I saw quite a bit of time spent in select again (this time about a quarter of a second).
-Once again using strace to see the arguments of select Using lsof -i -a -p &lt;PID of DB&gt;, I could see that it was waiting on file descriptors associated with the dummy service. However, given
+Once again using strace to see the arguments of select, it was waiting on a few file descriptors this time.
+Using
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">lsof -i -a -p &lt;PID of DB&gt;
+</pre>
+</div>
+<p>
+I could see that it was waiting on file descriptors associated with the dummy service. However, given
 the consistency of syncs, I didn't see any problems with the database.
 </p>
 
@@ -183,6 +216,23 @@ Bumping that batchSize up and rebuilding the container, I could see much more da
 <p><img src="https://b-t-g.github.io/assets/tcp_after.png" alt="tcp_after.png" />
 </p>
 </div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8dde1cc" class="outline-2">
+<h2 id="org8dde1cc">Impressions about BCC and eBPF</h2>
+<div class="outline-text-2" id="text-org8dde1cc">
+<p>
+When I first heard about BCC, I had already known about DTrace; I initially wasn't as excited about it as I was when I first heard about DTrace given that it's only easily usable
+with a pre-made script. However, the pre-made scripts from the BCC-toolkit are incredibly powerful and I never really felt wanting for this project. As time goes on, who knows? Maybe
+I'll make another post about how I wrote my own eBPF script!
+</p>
+
+
+<div class="figure">
+<p><img src="https://b-t-g.github.io/assets/tcp_after.png" alt="tcp_after.png" />
+</p>
 </div>
 </div>
 </div>
