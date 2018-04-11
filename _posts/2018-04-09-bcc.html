@@ -187,17 +187,28 @@ receiving, and send/write syscalls. This ultimately led me to strongly consider 
 </p>
 
 <p>
-Running top, this process was consuming about 100% CPU, in an attempt to get some more information about what it was doing, I got a thread dump using jstack -l &lt;PID of loader process&gt;. Unfortunately,
-the workload was coming from short-lived threads, not much information was gained from it (other than there being quite a few threads).
+Running top, this process was consuming about 100% CPU, in an attempt to get some more information about what it was doing, I got a thread dump using
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">jstack -l &lt;PID of loader process&gt;
+</pre>
+</div>
+<p>
+Unfortunately, the workload was coming from short-lived threads, not much information was gained from it (other than there being quite a few threads).
 </p>
 
 <p>
-However, I could to test this hypothesis further by now turning my attention to the log. Checking for high latency syscalls in the same way, I noticed that most of the latency was again
+However, I could to test this hypothesis further by now turning my attention to the transaction log. Checking for high latency syscalls in the same way, I noticed that most of the latency was again
 coming from epoll_wait, this time, about a third of a second; this seemed a bit too long for me This led me to believe that the loader service is, indeed the bottleneck.
 </p>
 
 <p>
-Now we turn ourselves back to the database; by how much is the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
+So, given the non-production nature of this particular pipeline, I was able to do a test to see whether it was the loader service that was unable to keep up by killing the dummy service.
+I saw that the tcp traffic going through the loader service was exactly the same! However, there another (and safer) way to do this.
+</p>
+
+<p>
+We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
 the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
 left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that roughly 5 times as much data was running
 through the operation log as going through the loader service.
@@ -212,7 +223,17 @@ through the operation log as going through the loader service.
 <p>
 So this asks the question, what is determining by how much traffic is being consumed by the loader
 process? We go back to the source. Conveniently for me, there was a class called DatabaseReader; perfect! Looking into the details of how it's polled, I could see that there was this batchSize
-variable. Hmm, curious. Well, what does the batchSize default to? I found the config file and the default batch size is 10. That's struck me as quite low given how quickly the log was growing.
+variable.
+</p>
+
+
+<div class="figure">
+<p><img src="https://b-t-g.github.io/assets/batchSize.png" alt="batchSize.png" />
+</p>
+</div>
+
+<p>
+Hmm, curious. Well, what does the batchSize default to? I found the config file and the default batch size is 10. That's struck me as quite low given how quickly the log was growing.
 Bumping that batchSize up and rebuilding the container, I could see much more data running through!
 </p>
 
@@ -231,14 +252,8 @@ Bumping that batchSize up and rebuilding the container, I could see much more da
 <p>
 When I first heard about BCC, I had already known about DTrace; I initially wasn't as excited about it as I was when I first heard about DTrace given that it's only easily usable
 with a pre-made script. However, the pre-made scripts from the BCC-toolkit are incredibly powerful and I never really felt wanting for this project. As time goes on, who knows? Maybe
-I'll make another post about how I wrote my own eBPF script!
+I'll make another post about how I wrote my own eBPF script!<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
 </p>
-
-
-<div class="figure">
-<p><img src="https://b-t-g.github.io/assets/tcp_after.png" alt="tcp_after.png" />
-</p>
-</div>
 </div>
 </div>
 <div id="footnotes">
@@ -252,6 +267,10 @@ Also, to have some sense of narrative, the exact ordering will differ.
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
 Although I suspect the reason you can get DTrace working with zones is because a zone is a first-class construct in Illumos whereas that is not the case with Docker and Linux.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+Although, if you are interested, Julia Evans has <a href="https://jvns.ca/blog/2018/02/24/an-ltrace-clone-using-ebpf/">several</a> <a href="https://jvns.ca/blog/2018/02/05/rust-bcc/">good</a> <a href="https://jvns.ca/blog/2018/01/31/spying-on-a-ruby-process-s-memory-allocations/">posts</a> on the subject.
 </p></div></div>
 
 
