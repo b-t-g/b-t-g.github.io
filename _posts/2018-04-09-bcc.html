@@ -23,9 +23,8 @@ tracking down the cause of the bottleneck.
 </p>
 
 <p>
-Although this is ostensibly a post about using BCC, I also wanted to illustrate my approach to debugging in a methodical manner; it was a new experience to me
-and I hope that others will benefit from it! <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
-Given that this was part of a real job interview process, some details are intentionally obscured such as the exact renaming of the services in the text itself.
+Although this is ostensibly a post about using BCC, I also wanted to illustrate my approach to debugging in the style mentioned earlier; it was a new experience to me and I hope that others
+will benefit from it! <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> Because this was part of a real job interview process, some details are intentionally obscured such as the exact renaming of the services in the text itself.
 </p>
 </div>
 
@@ -107,7 +106,7 @@ Python being that high was surprising to me, to say the least. So I decided to r
 </div>
 
 <p>
-Where the -i flag just means "print output every second" and -p means "for this PID only".
+Where the -i 1 flag just means "print output every second" and -p means "for this PID only".
 </p>
 
 
@@ -221,6 +220,16 @@ So, given the non-production nature of this particular pipeline, I was able to d
 I saw that the tcp traffic going through the loader service was exactly the same indicating that there was still data for the loader service to read, despite no new records being added
 to the operation log. However, there another (and safer) way to do this.
 </p>
+
+<p>
+First, observe the tcp throughput for the loader service:
+</p>
+
+
+<div class="figure">
+<p><img src="https://b-t-g.github.io/assets/tcp_loader.png" alt="tcp_loader.png" />
+</p>
+</div>
 
 <p>
 We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
