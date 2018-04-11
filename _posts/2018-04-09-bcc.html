@@ -217,8 +217,8 @@ indeed the bottleneck.
 
 <p>
 So, given the non-production nature of this particular pipeline, I was able to do a test to see whether it was the loader service that was unable to keep up by killing the dummy service.
-I saw that the tcp traffic going through the loader service was exactly the same indicating that there was still data for the loader service to read, despite no new records being added
-to the operation log. However, there another (and safer) way to do this.
+I saw that the tcp traffic going through the loader service was exactly the same, indicating that there was still data for the loader service to read despite no new records being added
+to the operation log. There another (and safer) way to check for the same thing.
 </p>
 
 <p>
@@ -233,9 +233,9 @@ First, observe the tcp throughput for the loader service:
 
 <p>
 We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
-the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
-left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time it's biotop that came to the rescue. I could see that much more data was running
-through the operation log as going through the loader service.
+the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. After scratching my head, I found out that the size of the operation log on disk is a
+fixed size after it gets to a certain size. This left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time it's biotop that came to the rescue.
+I could see that much more data was running through the operation log as going through the loader service.
 </p>
 
 
@@ -245,7 +245,7 @@ through the operation log as going through the loader service.
 </div>
 
 <p>
-So this asks the question, what is determining by how much traffic is being consumed by the loader process? We go back to the source. Conveniently for me, there was a class called DatabaseReader;
+Now we need to figure out what is determining how much traffic is being consumed by the loader process. We go back to the source. Conveniently for me, there was a class called DatabaseReader;
 perfect! Looking into the details of how it's polled, I could see that there was this batchSize variable.
 </p>
 
@@ -265,6 +265,9 @@ Bumping that batchSize up and rebuilding the container, I could see much more da
 <p><img src="https://b-t-g.github.io/assets/tcp_after.png" alt="tcp_after.png" />
 </p>
 </div>
+<p>
+So there we have it, tracking down a bottleneck from beginning to end with the help of BCC!
+</p>
 </div>
 </div>
 </div>
