@@ -117,7 +117,11 @@ Where the -i flag just means "print output every second" and -p means "for this 
 </div>
 
 <p>
-Diving a little bit deeper, I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments,
+Why is so much time being spent in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>?
+Looking at the arguments of select using:
+#+BEGIN_SRC bash
+strace -fp $(pgrep python3) -e select
+#+END_SRC to look at the arguments,
 it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
 </p>
 <blockquote>
@@ -126,7 +130,8 @@ Some code calls select() with all three sets empty, nfds zero, and a non-NULL ti
 </p>
 </blockquote>
 <p>
-So Python is sleeping for half a second for &#x2013; some reason? Well, this prompts another question; is this responsible for latency downstream? Let's look at the database.
+So Python is sleeping for half a second for &#x2013; some reason? There were some timeouts in the source code, tinkering with those didn't do anything. This prompted another question;
+is this responsible for latency downstream? Let's look at the database.
 </p>
 </div>
 </li>
@@ -151,16 +156,14 @@ this did not seem like a bottleneck.
 
 <p>
 But maybe there was latency elsewhere? Once again, relying on good 'ol syscount -L -p &lt;PID of DB&gt;, I saw quite a bit of time spent in select again (this time about a quarter of a second).
-Once again using strace to see the arguments of select, it was waiting on a few file descriptors this time.
-Using
+Once again using strace to see the arguments of select, it was waiting on a few file descriptors this time. Using
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">lsof -i -a -p &lt;PID of DB&gt;
 </pre>
 </div>
 <p>
-I could see that it was waiting on file descriptors associated with the dummy service. However, given
-the consistency of syncs, I didn't see any problems with the database.
+I could see that it was waiting on file descriptors associated with the dummy service. However, given the consistency of syncs, I didn't see any problems with the database.
 </p>
 
 <p>
@@ -187,7 +190,7 @@ receiving, and send/write syscalls. This ultimately led me to strongly consider 
 </p>
 
 <p>
-Running top, this process was consuming about 100% CPU, in an attempt to get some more information about what it was doing, I got a thread dump using
+Running top, this process was consuming about 100% CPU, in an attempt to get some more information about what it was doing, I got a thread dump by logging into the container and using
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">jstack -l &lt;PID of loader process&gt;
@@ -199,7 +202,7 @@ Unfortunately, the workload was coming from short-lived threads, not much inform
 
 <p>
 However, I could to test the hypothesis that the loader was the bottleneck by turning my attention to the transaction log. Checking for high latency syscalls in the same way,
-I noticed that most of the latency was again coming from epoll_wait, this time, about a third of a second; this seemed a bit too long for me This led me to believe that the loader service is,
+I noticed that most of the latency was again coming from epoll_wait, this time, about a third of a second; this seemed a bit too long for me and led me to believe that the loader service is,
 indeed the bottleneck.
 </p>
 
@@ -211,7 +214,7 @@ I saw that the tcp traffic going through the loader service was exactly the same
 <p>
 We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
 the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
-left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that much more data was running
+left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time it's biotop that came to the rescue. I could see that much more data was running
 through the operation log as going through the loader service.
 </p>
 
@@ -222,9 +225,8 @@ through the operation log as going through the loader service.
 </div>
 
 <p>
-So this asks the question, what is determining by how much traffic is being consumed by the loader
-process? We go back to the source. Conveniently for me, there was a class called DatabaseReader; perfect! Looking into the details of how it's polled, I could see that there was this batchSize
-variable.
+So this asks the question, what is determining by how much traffic is being consumed by the loader process? We go back to the source. Conveniently for me, there was a class called DatabaseReader;
+perfect! Looking into the details of how it's polled, I could see that there was this batchSize variable.
 </p>
 
 
