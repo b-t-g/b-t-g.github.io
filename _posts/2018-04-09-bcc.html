@@ -77,6 +77,14 @@ On the other hand, having the whole pipeline running on one host made it easy to
 I started off with seeing how much traffic was going throughout the pipeline, even though the exact data going from one point to the next may be different (because data may be added or removed),
 but I found it useful down the line. After looking around the available tcp tools, I found tcptop to be the best tool for this particular job.
 </p>
+<div class="org-src-container">
+<pre class="src src-bash">./tcptop -i 10
+</pre>
+</div>
+
+<p>
+-i 10 means show the data over a 10 second period, this made it easier to comprehend the data being displayed (the default is 1 second)
+</p>
 
 
 <div class="figure">
@@ -157,7 +165,13 @@ is this responsible for latency downstream? Let's look at the database.
 <h3 id="orgaf75fd0">Database</h3>
 <div class="outline-text-3" id="text-orgaf75fd0">
 <p>
-Running ext4slower from the bcc-toolkit library, I was able to see that the latency for syncing the log had some of the highest latency and contained most of
+Running
+</p>
+<pre class="example">
+./ext4slower
+</pre>
+<p>
+I was able to see that the latency for syncing the log had some of the highest latency and contained most of
 the filesystem operations taking over 1 ms. The exact time varied wildly, the distribution seemed to be roughly bimodal with 8 milliseconds and about 30 milliseconds being the most common.
 I saw syncs take as long as over 150 milliseconds, but they were atypical. The syncs were relatively consistent in the sense that they were never idle (although their latencies did vary),
 this did not seem like a bottleneck.
@@ -248,7 +262,14 @@ First, observe the tcp throughput for the loader service:
 <p>
 We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found the location of the operation log and ran wc -c
 several times and noticed that the file stayed the same size. After scratching my head, I found out that the size of the operation log on disk is a fixed size after it gets to a certain size.
-This left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time it's biotop that came to the rescue. I could see that much more data was
+This left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time I ran:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">./biotop
+</pre>
+</div>
+<p>
+I could see that much more data was
 running through the operation log as going through the loader service.
 </p>
 
