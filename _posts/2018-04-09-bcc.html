@@ -86,8 +86,12 @@ Next, I looked at the processes responsible for the most latency across the enti
 the entire system, however, I did see that Python and the database were pretty high up there.
 </p>
 
+
+<div class="figure">
+<p><img src="https://b-t-g.github.com/assets/global_latency.png" alt="global_latency.png" />
+</p>
+</div>
 <p>
-<img src="https://b-t-g.github.com/assets/global_latency.png" alt="global_latency.png" />
 Python being that high was surprising to me, to say the least. Diving a little bit deeper, I found that a lot of that time was in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>, using strace to look at the arguments,
 it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
 </p>
