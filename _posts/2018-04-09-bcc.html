@@ -38,7 +38,7 @@ will benefit from it! <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup
 It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
 kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>). A lot
 of very meaningful information can still be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use.
-Having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency, so it's not all doom and gloom.
+On the other hand, having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency, so it's not all doom and gloom.
 </p>
 </div>
 </div>
@@ -77,6 +77,15 @@ but I found it useful down the line. After looking around the available tcp tool
 </p>
 </div>
 
+<p>
+Note the processes going through the loader service (the Java processes with RADDR 27017) are quite low in comparison to the dummy service (python3). This gives some early evidence that the loader
+service is a bottleneck.
+</p>
+</div>
+</li>
+
+<li><a id="orgfde2fb1"></a>Question: What services are causing the most latency?<br />
+<div class="outline-text-4" id="text-orgfde2fb1">
 <p>
 Next, I wanted to look at the processes responsible for the most latency across the entire system. the syscount command with the -L flag (aggregate by latency and not the amount of time a
 syscall is made) and the -P flag (aggregate by processes and not syscalls), was what I needed:
