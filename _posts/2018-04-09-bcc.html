@@ -15,7 +15,7 @@ categories:
 <p>
 <a href="https://github.com/iovisor/bcc">BCC</a>, a series of scripts using eBPF (a packet filter turned tracer for Linux), helped change my debugging perspective from "what is my code doing" to "why is the system behaving in such a way"
 and then answering those questions efficiently. By not digging into the source code prematurely, I spent more time understanding the behavior of the system and, when it was necessary to dive
-into the source code, I had a much better idea of where to look which minimized time wasted searching through unfamiliar code.
+into the source code, I had a much better idea of where to look which prevented me from wasting my time stumbling through unfamiliar code.
 </p>
 
 <p>
@@ -24,7 +24,7 @@ In this post, I'll cover:
 <ul class="org-ul">
 <li>The problem I worked on</li>
 <li>The questions I asked while I debugged it generally</li>
-<li>how I used the tools I found helpful along the way (mostly from BCC)</li>
+<li>How I used the tools I found helpful along the way (mostly from BCC)</li>
 </ul>
 
 <div id="outline-container-org07162fe" class="outline-2">
@@ -59,9 +59,9 @@ and loads it into a transaction log.
 <div class="outline-text-3" id="text-org996a87c">
 <p>
 It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
-kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>). A lot
+kernel (and BPF often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>). A lot
 of very meaningful information can still be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use.
-On the other hand, having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency, so it's not all doom and gloom.
+On the other hand, having the whole pipeline running on one host made it easy to access system wide metrics such as TCP traffic and latency, so it's not all doom and gloom.
 </p>
 </div>
 </div>
