@@ -82,15 +82,15 @@ After looking around the available tcp tools, I found tcptop to be the best tool
 
 
 <p>
-Next, I looked at the processes responsible for the most latency across the entire system. Given that the computer was non-idle,
+Next, I wanted to look at the processes responsible for the most latency across the entire system. the syscount command with the -L flag (aggregate by latency and not the amount of time a syscall is made)
+and the -P flag (aggregate by processes and not syscalls), was what I needed:
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">syscount -LP
 </pre>
 </div>
 <p>
-was fairly noisy across
-the entire system, however, I did see that Python and the database were pretty high up there.
+Given that the computer was running things other than just the pipeline, it was fairly noisy across the entire system, however, I did see that Python and the database were pretty high up there.
 </p>
 
 
@@ -201,8 +201,13 @@ Now we turn ourselves back to the database; by how much is the operation log gro
 the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
 left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that roughly 5 times as much data was running
 through the operation log as going through the loader service.
-<img src="https://b-t-g.github.io/assets/biotop.png" alt="biotop.png" />
 </p>
+
+
+<div class="figure">
+<p><img src="https://b-t-g.github.io/assets/biotop.png" alt="biotop.png" />
+</p>
+</div>
 
 <p>
 So this asks the question, what is determining by how much traffic is being consumed by the loader
