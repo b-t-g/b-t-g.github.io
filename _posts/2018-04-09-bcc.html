@@ -194,13 +194,13 @@ Checking for the highest latency syscalls running this:
 ./syscount -L -p &lt;PID of loader&gt;
 </pre>
 <p>
-most of the latency was coming from epoll_wait, but about a third of a millisecond. Digging around in the source code, I could see that the loader service was polling the database's operation log
+most of the latency was coming from epoll_wait, but about a third of a millisecond. Digging around in the source code, I could see that the loader service was polling the database's operation log.
 In light of this, that amount of latency makes sense since that's about the latency one could expect for a request. Indeed, it seemed like most of the workload was from reading,
 receiving, and send/write syscalls. This ultimately led me to strongly consider that this could be a bottleneck.
 </p>
 
 <p>
-Running top, this process was consuming about 100% CPU, in an attempt to get some more information about what it was doing, I got a thread dump by logging into the container and using
+Running top, this process was consuming about 100% CPU, in an attempt to get some more information about what it was doing, I got a thread dump by logging into the container and using:
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">jstack -l &lt;PID of loader process&gt;
@@ -218,7 +218,8 @@ indeed the bottleneck.
 
 <p>
 So, given the non-production nature of this particular pipeline, I was able to do a test to see whether it was the loader service that was unable to keep up by killing the dummy service.
-I saw that the tcp traffic going through the loader service was exactly the same! However, there another (and safer) way to do this.
+I saw that the tcp traffic going through the loader service was exactly the same indicating that there was still data for the loader service to read, despite no new records being added
+to the operation log. However, there another (and safer) way to do this.
 </p>
 
 <p>
@@ -265,7 +266,7 @@ Bumping that batchSize up and rebuilding the container, I could see much more da
 <p>
 When I first heard about BCC, I had already known about DTrace; I initially wasn't as excited about it as I was when I first heard about DTrace given that it's only easily usable
 with a pre-made script. However, the pre-made scripts from the BCC-toolkit are incredibly powerful and I never really felt wanting for this project. As time goes on, who knows? Maybe
-I'll make another post about how I wrote my own eBPF script!<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
+<a href="https://github.com/ajor/bpftrace">bpftrace</a> or <a href="https://github.com/iovisor/ply">ply</a> will catch on or I'll make another post about how I wrote my own eBPF script!<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
 </p>
 </div>
 </div>
