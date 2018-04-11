@@ -119,10 +119,13 @@ Where the -i flag just means "print output every second" and -p means "for this 
 <p>
 Why is so much time being spent in the <a href="http://man7.org/linux/man-pages/man2/select.2.html">select syscall</a>?
 Looking at the arguments of select using:
-#+BEGIN_SRC bash
-strace -fp $(pgrep python3) -e select
-#+END_SRC to look at the arguments,
-it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">strace -fp $(pgrep python3) -e select
+</pre>
+</div>
+<p>
+to look at the arguments, it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
 </p>
 <blockquote>
 <p>
