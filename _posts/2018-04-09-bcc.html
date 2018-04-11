@@ -158,7 +158,14 @@ this did not seem like a bottleneck.
 </div>
 
 <p>
-But maybe there was latency elsewhere? Once again, relying on good 'ol syscount -L -p &lt;PID of DB&gt;, I saw quite a bit of time spent in select again (this time about a quarter of a second).
+But maybe there was latency elsewhere? Once again, relying on good 'ol
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">syscount -L -p &lt;PID of DB&gt;
+</pre>
+</div>
+<p>
+I saw quite a bit of time spent in select again (this time about a quarter of a second).
 Once again using strace to see the arguments of select, it was waiting on a few file descriptors this time. Using
 </p>
 <div class="org-src-container">
