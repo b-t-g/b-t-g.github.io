@@ -36,7 +36,7 @@ Given that this was part of a real job interview process, some details are inten
 It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
 kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>). However, a lot
 of very meaningful information can be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use. However,
-given that I could get the whole pipeline on one host, I had easy access to system wide statistics such as TCP traffic and latency; so it's not all doom and gloom.
+having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency; so it's not all doom and gloom.
 </p>
 </div>
 </div>
@@ -86,7 +86,7 @@ Next, I wanted to look at the processes responsible for the most latency across 
 and the -P flag (aggregate by processes and not syscalls), was what I needed:
 </p>
 <div class="org-src-container">
-<pre class="src src-bash">syscount -LP
+<pre class="src src-bash">./syscount -LP
 </pre>
 </div>
 <p>
@@ -161,7 +161,7 @@ this did not seem like a bottleneck.
 But maybe there was latency elsewhere? Once again, relying on good 'ol
 </p>
 <div class="org-src-container">
-<pre class="src src-bash">syscount -L -p &lt;PID of DB&gt;
+<pre class="src src-bash">./syscount -L -p &lt;PID of DB&gt;
 </pre>
 </div>
 <p>
