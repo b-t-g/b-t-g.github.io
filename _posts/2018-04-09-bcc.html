@@ -12,35 +12,29 @@ categories:
 - Linux
 - debugging
 ---
-<div id="outline-container-org14c6766" class="outline-2">
-<h2 id="org14c6766">Using BCC to track down a data pipeline bottleneck</h2>
-<div class="outline-text-2" id="text-org14c6766">
 <p>
-As part of a job interview, I was tasked with finding issues in a data pipeline in a Docker environment. Because of certain subtleties
-of the pipeline, using Linux was a constraint. In light of that, I saw a great opportunity to use the <a href="https://github.com/iovisor/bcc">BCC toolkit</a> that I had heard so much
-about and, more generally, use the debugging approach espoused by Bryan Cantrill and others of "ask questions of the system to constrain
-hypotheses about what's going on to understand your system" as a way to use debugging to better understand the system, instead of the more
-typical style of "debugging to make the badness go away". The end result was a much better understanding of an entirely foreign system and
-confidence that the issue I had found was, in fact, the correct issue. There were some other issues with the pipeline but I'll focus on
-tracking down the cause of the bottleneck.
+<a href="https://github.com/iovisor/bcc">BCC</a>, a series of scripts using eBPF (a packet filter turned tracer for Linux), helped change my debugging perspective from "what is my code doing" to "why is the system behaving in such a way"
+and then answering those questions efficiently. By not digging into the source code prematurely, I spent more time understanding the behavior of the system and, when it was necessary to dive
+into the source code, I had a much better idea of where to look which minimized time wasted searching through unfamiliar code.
 </p>
 
 <p>
-Although this is ostensibly a post about using BCC, I also wanted to illustrate my approach to debugging in the style mentioned earlier; it was a new experience to me and I hope that others
-will benefit from it! <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> Because this was part of a real job interview process, some details are intentionally obscured such as the exact renaming of the services in the text itself.
+In this post, I'll cover:
 </p>
-</div>
+<ul class="org-ul">
+<li>The problem I worked on</li>
+<li>The questions I asked while I debugged it generally</li>
+<li>how I used the tools I found helpful along the way (mostly from BCC)</li>
+</ul>
 
-<div id="outline-container-orgabd60ca" class="outline-3">
-<h3 id="orgabd60ca">Difficulties posed by Docker</h3>
-<div class="outline-text-3" id="text-orgabd60ca">
+<div id="outline-container-org07162fe" class="outline-2">
+<h2 id="org07162fe">Problem description</h2>
+<div class="outline-text-2" id="text-org07162fe">
 <p>
-It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
-kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>). A lot
-of very meaningful information can still be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use.
-On the other hand, having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency, so it's not all doom and gloom.
+As part of a job interview, I was given a data pipeline in a Docker environment and told to find as many things wrong with it as possible. There were a few things that needed to be addressed,
+but I'll discuss how I found a bottleneck in the pipeline. Since this was a part of a real job interview, I've intentionally obscured the names of some technologies used (namely the database
+and the transaction log).
 </p>
-</div>
 </div>
 
 <div id="outline-container-org837830f" class="outline-3">
@@ -55,6 +49,19 @@ and loads it into a transaction log.
 \[
 \text{Dummy}\to\ \text{Database}\ \to \text{Loader}\ \to\ \text{Transaction Log}
 \]
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org996a87c" class="outline-3">
+<h3 id="org996a87c">Aside: Difficulties posed by Docker</h3>
+<div class="outline-text-3" id="text-org996a87c">
+<p>
+It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
+kernel (and BCC often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>). A lot
+of very meaningful information can still be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use.
+On the other hand, having the whole pipeline running on one host made it easy to access system wide statistics such as TCP traffic and latency, so it's not all doom and gloom.
 </p>
 </div>
 </div>
@@ -95,7 +102,7 @@ syscall is made) and the -P flag (aggregate by processes and not syscalls), was 
 </pre>
 </div>
 <p>
-Given that the computer was running things other than just the pipeline, it was fairly noisy across the entire system, but I did see that Python and the database were pretty high up there.
+The computer was running things other than just the pipeline, so it was fairly noisy across the entire system, but I did see that Python and the database were pretty high up there.
 </p>
 
 
@@ -223,9 +230,9 @@ indeed the bottleneck.
 </p>
 
 <p>
-So, given the non-production nature of this particular pipeline, I was able to do a test to see whether it was the loader service that was unable to keep up by killing the dummy service.
+Since the pipeline was running locally and not in production, I was able to do a test to see whether it was the loader service that was unable to keep up by killing the dummy service.
 I saw that the tcp traffic going through the loader service was exactly the same, indicating that there was still data for the loader service to read despite no new records being added
-to the operation log. There another (and safer) way to check for the same thing.
+to the operation log. There is another (and safer) way to check for the same thing.
 </p>
 
 <p>
@@ -283,9 +290,9 @@ So there we have it, tracking down a bottleneck from beginning to end with the h
 <h2 id="org8dde1cc">Impressions about BCC and eBPF</h2>
 <div class="outline-text-2" id="text-org8dde1cc">
 <p>
-When I first heard about BCC, I had already known about DTrace; I initially wasn't as excited about it as I was when I first heard about DTrace given that it's only easily usable
-with a pre-made script. However, the pre-made scripts from the BCC-toolkit are incredibly powerful and I never really felt wanting for this project. As time goes on, who knows? Maybe
-<a href="https://github.com/ajor/bpftrace">bpftrace</a> or <a href="https://github.com/iovisor/ply">ply</a> will catch on or I'll make another post about how I wrote my own eBPF script!<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
+When I first heard about BCC, I had already known about DTrace; I initially wasn't as excited about it as I was when I first heard about DTrace because it's far more difficult to make
+new scripts. However, the pre-made scripts from the BCC-toolkit are incredibly powerful and I never really felt wanting for this project. As time goes on, who knows? Maybe
+<a href="https://github.com/ajor/bpftrace">bpftrace</a> or <a href="https://github.com/iovisor/ply">ply</a> will catch on or I'll make another post about how I wrote my own eBPF script!<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>
 </p>
 </div>
 </div>
@@ -294,15 +301,10 @@ with a pre-made script. However, the pre-made scripts from the BCC-toolkit are i
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-In light of that, I'll try to talk about approaches that weren't successful, to help highlight how I approached the problem, but I'll inevitably exclude some things I tried but didn't work.
-Also, to have some sense of narrative, the exact ordering will differ.
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
 I suspect the reason you can get DTrace working with zones is because a zone is a first-class construct in Illumos whereas that is not the case with Docker and Linux.
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
 If you are interested, Julia Evans has <a href="https://jvns.ca/blog/2018/02/24/an-ltrace-clone-using-ebpf/">several</a> <a href="https://jvns.ca/blog/2018/02/05/rust-bcc/">good</a> <a href="https://jvns.ca/blog/2018/01/31/spying-on-a-ruby-process-s-memory-allocations/">posts</a> on the subject.
 </p></div></div>
 
