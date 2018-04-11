@@ -67,13 +67,8 @@ and loads it into a transaction log.
 <li><a id="orgac8b1b9"></a>Question: What's the TCP throughput?<br />
 <div class="outline-text-4" id="text-orgac8b1b9">
 <p>
-I started off with seeing how much traffic the dummy service was generating, although the exact data flowing into database via the dummy service would be different since the
-query from the dummy service would then be written to the operation log in a different format, but this gave a baseline for what kind of throughput
-we should expect as well as investigating what the effects are when network troubles occur.
-</p>
-
-<p>
-After looking around the available tcp tools, I found tcptop to be the best tool for this particular job.
+I started off with seeing how much traffic was going throughout the pipeline, even though the exact data going from one point to the next may be different (because data may be added or removed),
+but I found it useful down the line. After looking around the available tcp tools, I found tcptop to be the best tool for this particular job.
 </p>
 
 
@@ -82,10 +77,9 @@ After looking around the available tcp tools, I found tcptop to be the best tool
 </p>
 </div>
 
-
 <p>
-Next, I wanted to look at the processes responsible for the most latency across the entire system. the syscount command with the -L flag (aggregate by latency and not the amount of time a syscall is made)
-and the -P flag (aggregate by processes and not syscalls), was what I needed:
+Next, I wanted to look at the processes responsible for the most latency across the entire system. the syscount command with the -L flag (aggregate by latency and not the amount of time a
+syscall is made) and the -P flag (aggregate by processes and not syscalls), was what I needed:
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">./syscount -LP
@@ -101,7 +95,7 @@ Given that the computer was running things other than just the pipeline, it was 
 </p>
 </div>
 <p>
-Python being that high was surprising to me, to say the least. So I decided to run
+Python being that high was surprising to me. So I decided to run
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">./syscount -L -i 1 -p $(pgrep python3)
@@ -127,7 +121,7 @@ Looking at the arguments of select using:
 </pre>
 </div>
 <p>
-to look at the arguments, it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
+it wasn't looking at a particular file descriptor. The linked man page has something to say about this:
 </p>
 <blockquote>
 <p>
@@ -167,7 +161,7 @@ But maybe there was latency elsewhere? Once again, relying on good 'ol
 </pre>
 </div>
 <p>
-I saw quite a bit of time spent in select again (this time about a quarter of a second).
+I saw that it was spending some time in select again (this time about a quarter of a second).
 Once again using strace to see the arguments of select, it was waiting on a few file descriptors this time. Using
 </p>
 <div class="org-src-container">
@@ -175,12 +169,13 @@ Once again using strace to see the arguments of select, it was waiting on a few 
 </pre>
 </div>
 <p>
-I could see that it was waiting on file descriptors associated with the dummy service. However, given the consistency of syncs, I didn't see any problems with the database.
+I could see that it was waiting on file descriptors associated with the dummy service. This seemed troubling at first, but being blocked on that file descriptor means that it is
+waiting for data, which would manifest in fewer syncs of the operation log. However, the operation log was syncing regularly, so there were no latency issues with the database.
 </p>
 
 <p>
-Just to make sure, I looked at the number of current operations to the database, it was constantly about 5 or 6, so everything checked out here! Even though the mystery of Python's
-sleep was still unsolved, it did not seem like the problem I was looking for.
+Just to make sure that the database wasn't a problem, I looked at the number of current operations to the database, it was constantly about 5 or 6, so everything checked out here!
+Even though the mystery of Python's sleep was still unsolved, it did not seem like the problem I was looking for.
 </p>
 </div>
 </div>
@@ -235,10 +230,10 @@ First, observe the tcp throughput for the loader service:
 </div>
 
 <p>
-We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
-the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. After scratching my head, I found out that the size of the operation log on disk is a
-fixed size after it gets to a certain size. This left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time it's biotop that came to the rescue.
-I could see that much more data was running through the operation log as going through the loader service.
+We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found the location of the operation log and ran wc -c
+several times and noticed that the file stayed the same size. After scratching my head, I found out that the size of the operation log on disk is a fixed size after it gets to a certain size.
+This left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time it's biotop that came to the rescue. I could see that much more data was
+running through the operation log as going through the loader service.
 </p>
 
 
@@ -295,11 +290,11 @@ Also, to have some sense of narrative, the exact ordering will differ.
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
-Although I suspect the reason you can get DTrace working with zones is because a zone is a first-class construct in Illumos whereas that is not the case with Docker and Linux.
+I suspect the reason you can get DTrace working with zones is because a zone is a first-class construct in Illumos whereas that is not the case with Docker and Linux.
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
-Although, if you are interested, Julia Evans has <a href="https://jvns.ca/blog/2018/02/24/an-ltrace-clone-using-ebpf/">several</a> <a href="https://jvns.ca/blog/2018/02/05/rust-bcc/">good</a> <a href="https://jvns.ca/blog/2018/01/31/spying-on-a-ruby-process-s-memory-allocations/">posts</a> on the subject.
+If you are interested, Julia Evans has <a href="https://jvns.ca/blog/2018/02/24/an-ltrace-clone-using-ebpf/">several</a> <a href="https://jvns.ca/blog/2018/02/05/rust-bcc/">good</a> <a href="https://jvns.ca/blog/2018/01/31/spying-on-a-ruby-process-s-memory-allocations/">posts</a> on the subject.
 </p></div></div>
 
 
