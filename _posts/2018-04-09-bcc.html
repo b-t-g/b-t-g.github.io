@@ -198,8 +198,9 @@ Unfortunately, the workload was coming from short-lived threads, not much inform
 </p>
 
 <p>
-However, I could to test this hypothesis further by now turning my attention to the transaction log. Checking for high latency syscalls in the same way, I noticed that most of the latency was again
-coming from epoll_wait, this time, about a third of a second; this seemed a bit too long for me This led me to believe that the loader service is, indeed the bottleneck.
+However, I could to test the hypothesis that the loader was the bottleneck by turning my attention to the transaction log. Checking for high latency syscalls in the same way,
+I noticed that most of the latency was again coming from epoll_wait, this time, about a third of a second; this seemed a bit too long for me This led me to believe that the loader service is,
+indeed the bottleneck.
 </p>
 
 <p>
@@ -210,7 +211,7 @@ I saw that the tcp traffic going through the loader service was exactly the same
 <p>
 We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found
 the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. I then saw that the size of the operation log on disk is a fixed size, which
-left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that roughly 5 times as much data was running
+left the question of by how much the operation log was growing over a 10 second period? This time it's biotop that came to the rescue. I could see that much more data was running
 through the operation log as going through the loader service.
 </p>
 
