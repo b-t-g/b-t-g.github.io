@@ -38,13 +38,13 @@ to the "homomorphism of functors" viewpoint, this post unwinds that analogy a bi
 <div class="outline-text-2" id="text-orgf5b294b">
 <p>
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category \(C\), for two objects \(X,Y\in ob(C)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>, a morphism \(f:X\to Y\) means
-that \(Y\) has the same structure as \(X\). Even though that last point sounds like a needless abstraction, that insight will be useful later.
+a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category \(C\), if, for two objects \(X,Y\in ob(C)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>, there is a morphism \(f:X\to Y\) this
+means that \(Y\) has the same structure as \(X\). Even though that last point sounds like a needless abstraction, that insight will be useful later.
 </p>
 
 <p>
-With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from category \(C\),
-I'll give you an object from category \(D\). Similarly, you give me a morphism from \(C\), I'll give you a morphism from \(D\).
+With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from a category \(C\),
+I'll give you an object from category a \(D\). Similarly, you give me a morphism from \(C\), I'll give you a morphism from \(D\).
 </p>
 
 <p>
@@ -64,7 +64,7 @@ Where \(f\in mor(X,Y)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></su
 
 <p>
 How does this construction have those properties I talked about earlier? If I have two functors \(F\) and \(G\), I can apply it them to an object \(X\) and get two objects from \(D\), the top arrow says that
-we require a morphism from \(\eta_X:F(X)\to G(X)\), which is to say that we need \(F(X)\) and \(G(X)\) to have the same structure (whatever that means in our category of choice).
+we require a morphism from \(\eta_X:F(X)\to G(X)\), which is to say that we need \(F(X)\) and \(G(X)\) to have the same structure (whatever that means in our particular category).
 </p>
 
 <p>
@@ -73,12 +73,21 @@ arbitrary objects?
 </p>
 
 <p>
-Explicitly stating that the bottom arrow makes the diagram commute is surprisingly deep. The bottom arrow is the condition that our functors change morphisms in a compatible way.
+Consider the following (silly) example for groups. Here I take \(F,G:Grp\to Grp\) to be the identity functors. I take \(\eta_\mathbb{Z}\) to be the identity function but I take
+\(\eta_{\mathbb{Z}\slash2\mathbb{Z}}\) to be the zero function. If we didn't specify the bottom arrow, the resulting in the non-commutative diagram would represent a natural transformation.
 </p>
 
 <p>
-That is to say, if I have an object \(X\in ob(C)\) and a morphism \(f\in mor(X,Y)\) and I take my functors and apply them to \(X\) to get \(F(X)\) and \(G(X)\). Now I apply the induced morphism \(F(f)\) to
-\(F(X)\) and \(G(f)\) to \(G(X)\) to get \(F(Y)\) and \(G(Y)\) respectively.
+\[\begin{CD}
+\mathbb{Z}                   @>x\mapsto x>> \mathbb{Z} \\
+@Vx\mapsto x\mod 2VV                        @VVx\mapsto x\mod 2V \\
+\mathbb{Z}\slash 2\mathbb{Z} @>0>>          \mathbb{Z}\slash 2\mathbb{Z}
+\end{CD} \]
+</p>
+
+<p>
+Explicitly stating that the bottom arrow makes the diagram commute is surprisingly deep. The bottom arrow is the condition that our functors change morphisms and objects in a way that are
+compatible with each other!
 </p>
 </div>
 </div>
