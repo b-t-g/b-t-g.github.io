@@ -17,8 +17,8 @@ Natural transformations are the gatekeeper to the rest of category theory. Once 
 the "correct" notion of two categories being equivalent (unsurprisingly called an [[https://en.wikipedia.org/wiki/Equivalence_of_categories][equivalence of categories]]) relies on natural transformations.
 
 Despite this notion being critical, I've only really heard two explanations of them (both unenlightening):
-- "coordinate free transformations" (what does that even mean)
-- "homomorphism of functors" (a bit too high-level to make sense "out of the box")
+- A natural transformations are "coordinate free transformations" (what does that even mean)
+- A natural transformation is a "homomorphism of functors" (a bit too high-level to make sense "out of the box")
 As is often the case for me, the best approach for me was stare at the diagram and figure out the intuition for myself.
 
 In this post, I'll talk about my intuition for natural transformations and, roughly, how I came to it. Although the understanding I ultimately arrived at is pretty much identical
@@ -26,8 +26,8 @@ to the "homomorphism of functors" viewpoint, this post unwinds that analogy a bi
 
 * What is a homomorphism, really?
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category $C$, for two object $X,Y\in ob(C)$[fn:1], a morphism $f:X\to Y$ means
-that $Y$ has the same structure as $F$. Even though that last point sounds like a needless abstraction, we'll be using it later.
+a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category $C$, for two objects $X,Y\in ob(C)$[fn:1], a morphism $f:X\to Y$ means
+that $Y$ has the same structure as $X$. Even though that last point sounds like a needless abstraction, that insight will be useful later.
 
 With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from category $C$,
 I'll give you an object from category $D$. Similarly, you give me a morphism from $C$, I'll give you a morphism from $D$.
@@ -44,8 +44,16 @@ F(Y) @>\eta_Y>> G(Y)
 Where $f\in mor(X,Y)$[fn:2]
 
 How does this construction have those properties I talked about earlier? If I have two functors $F$ and $G$, I can apply it them to an object $X$ and get two objects from $D$, the top arrow says that
-you can take that we require a morphism from $\eta_X:F(X)\to G(X)$, which is to say that we need $F(X)$ and $G(X)$ to have the same structure (whatever that means in our category of choice).
-The bottom arrow is a similar story: If I have some
+we require a morphism from $\eta_X:F(X)\to G(X)$, which is to say that we need $F(X)$ and $G(X)$ to have the same structure (whatever that means in our category of choice).
+
+The bottom arrow is surprisingly deep. If we stopped here, we would have the following diagram:
+\[\begin{CD}
+F(X) @>\eta_X>> G(X) \\
+@VF(f)VV        @VVG(f)V \\
+F(Y) @.         G(Y)
+\end{CD} \]
+
+That is to say,
 
 Now what about morphisms being preserved? Well it turns out that we get that for free! From [[https://en.wikipedia.org/wiki/Functor#Definition][the definition of a functor]], for a functor $F$, if we have $f\in mor(X,Y)$, we automatically get a morphism
 $F(f)\in mor(F(X), F(Y))$[fn:3].
