@@ -14,24 +14,30 @@ latex_header: \usepackage{amscd}
 ---
 <p>
 Natural transformations are the gatekeeper to the rest of category theory. Once you understand them, adjoint functors and even the (in)famous monads unveil themselves. In fact,
-the "correct" notion of two categories being equivalent (unsurprisingly called an equivalence of categories) relies on natural transformations.
+the "correct" notion of two categories being equivalent (unsurprisingly called an <a href="https://en.wikipedia.org/wiki/Equivalence_of_categories">equivalence of categories</a>) relies on natural transformations.
 </p>
 
 <p>
-Despite this notion being critical, I've always found the typical explanations unenlightening such as "coordinate free transformations" (what does that even mean) and "homomorphism of functors".
-As is often the case for me, the best approach for me was stare at the diagram and figure out what it means.
+Despite this notion being critical, I've only really heard two explanations of them (both unenlightening):
+</p>
+<ul class="org-ul">
+<li>"coordinate free transformations" (what does that even mean)</li>
+<li>"homomorphism of functors" (a bit too high-level to make sense "out of the box")</li>
+</ul>
+<p>
+As is often the case for me, the best approach for me was stare at the diagram and figure out the intuition for myself.
 </p>
 
 <p>
-In this post, I'll talk about my intuition for natural transformations and, roughly, how I came to them. Although the understanding I ultimately came to is pretty much identical
-to the "homomorphism of functors" viewpoint, I'll unwind the analogy a bit more.
+In this post, I'll talk about my intuition for natural transformations and, roughly, how I came to it. Although the understanding I ultimately arrived at is pretty much identical
+to the "homomorphism of functors" viewpoint, this posts unwinds that analogy a bit more.
 </p>
 
 <p>
-Now, what is a homomorphism, really? A map which preserves the structure of its argument. I.e., a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. This doesn't get us much further without first, ironically, taking a step back; what is the "structure of a functor"?
-It's a strange question with a straightforward answer: you apply it. You give me an element of category \(C\), I'll give you an element of category \(D\). Similarly, you give me a morphism in \(C\),
-I'll give you a morphism in \(D\).
+Now, what is a homomorphism, really? It's just a map which preserves the structure of its argument. I.e., a group homomorphism is a map which sends groups to groups,
+a "category homomorphism" (functor) sends categories to categories, etc. This doesn't get us much further without first, ironically, taking a step back and asking the question
+ what is the "structure of a functor"? It's a strange question with a straightforward answer: you apply it. You give me an element of category \(C\), I'll give you an element of category \(D\).
+Similarly, you give me a morphism in \(C\), I'll give you a morphism in \(D\).
 </p>
 
 <p>
@@ -39,7 +45,7 @@ Before we go diving into the intuition, here's the definition of a natural trans
 </p>
 
 <p>
-A natural transformation between two functors \(F,G:C\to D\) associates each object \(X\in C\) a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram commutes.
+A natural transformation between two functors \(F,G:C\to D\) associates each object \(X\in C\) with a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram commutes.
 \[\begin{CD}
 F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
@@ -75,7 +81,7 @@ This could put is in an uncomfortable situation where we map to objects \(G(X)\)
 <h2 id="org5da8fb0">An odd example that made it click for me</h2>
 <div class="outline-text-2" id="text-org5da8fb0">
 <p>
-At a Haskell meetup, the organizer (<a href="https://gbaz.github.io/">Gershom Bazerman</a>) said "When people ask me for references on category theory, I say 'the second one you end up reading'",
+At a Haskell meetup, the organizer (<a href="https://gbaz.github.io/">Gershom Bazerman</a>) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'",
 and I suspect that there may be an element of that here. Nonetheless, even though it's not a natural transformation, it helped me further understand "structure preserving functions".
 </p>
 </div>
