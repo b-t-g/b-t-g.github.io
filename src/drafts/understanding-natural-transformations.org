@@ -51,7 +51,7 @@ F(Y) @>\eta_Y>> G(Y)
 This could put is in an uncomfortable situation where we map to objects $G(X)$ and $G(Y)$ that have no morphisms between them. The arrow on the right now amounts to us needing to have a morphism in
 $D$ between the derived objects $G(X)$ and $G(Y)$.
 
-* an odd example that made it click for me
+* An odd example that made it click for me
 At a Haskell meetup, the organizer ([[https://gbaz.github.io/][Gershom Bazerman]]) said "When people ask me for references on category theory, I say 'the second one you end up reading'",
 and I suspect that there may be an element of that here. Nonetheless, even though it's not a natural transformation, it helped me further understand "structure preserving functions".
 
