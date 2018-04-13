@@ -30,7 +30,7 @@ As is often the case for me, the best approach for me was stare at the diagram a
 
 <p>
 In this post, I'll talk about my intuition for natural transformations and, roughly, how I came to it. Although the understanding I ultimately arrived at is pretty much identical
-to the "homomorphism of functors" viewpoint, this posts unwinds that analogy a bit more.
+to the "homomorphism of functors" viewpoint, this post unwinds that analogy a bit more.
 </p>
 
 <div id="outline-container-orgf5b294b" class="outline-2">
@@ -38,7 +38,8 @@ to the "homomorphism of functors" viewpoint, this posts unwinds that analogy a b
 <div class="outline-text-2" id="text-orgf5b294b">
 <p>
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc.
+a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category \(C\), for two object \(X,Y\in ob(C)[fn:1]\), a morphism \(f:X\to Y\) means
+that \(Y\) has the same structure as \(F\). Even though that last point sounds like a needless abstraction, we'll be using it later.
 </p>
 
 <p>
@@ -47,23 +48,25 @@ I'll give you an object from category \(D\). Similarly, you give me a morphism f
 </p>
 
 <p>
-Before we go diving into the intuition, here's the definition of a natural transformation (which is a 90 degree rotation from the one <a href="https://en.wikipedia.org/wiki/Natural_transformation#Definition">listed on Wikipedia</a>).
+Before we go diving into the intuition, here's the definition of a natural transformation:
 </p>
 
 <p>
-A natural transformation between two functors \(F,G:C\to D\) associates to each object \(X\in ob(C)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram commutes.
+A natural transformation between two functors \(F,G:C\to D\) associates to each object \(X\in ob(C)\) a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram
+commutes (which is a 90 degree rotation from the one <a href="https://en.wikipedia.org/wiki/Natural_transformation#Definition">listed on Wikipedia</a>).
 \[\begin{CD}
 F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
 F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
-Where \(f\in mor(X,Y)\)<sup><a id="fnr.1.100" class="footref" href="#fn.1">1</a></sup>
+Where \(f\in mor(X,Y)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
 </p>
 
 <p>
-How does this show those properties I said earlier? If I have a functor \(F\), I can apply it to an object \(X\) and get an object from \(D\), the top arrow says that you can take that
-object \(F(X)\) and get another object \(G(X)\) from \(D\). The bottom arrow is the same story. So, we have the object part down. If I have some object \(F(X)\in ob(D)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> via \(F\) (call it \(F(X)\)),
-I can get some object from \(G(X)\in ob(D)\) via \(G\) as well.
+How does this construction have those properties I talked about earlier? If I have a functor \(F\), I can apply it to an object \(X\) and get an object from \(D\), the top arrow says that you can take that
+object \(F(X)\) and get another object \(G(X)\) from \(D\). It goes even deeper, we require a morphism from \(\eta_X:F(X)\to G(X)\), which is to say that we need \(F(X)\) and \(G(X)\) to have the same structure.
+The bottom arrow is the same story. So, we have the object part down. If I have some object \(F(X)\in ob(D)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> via \(F\) (call it \(F(X)\)), I can get some object with the same structure from
+\(G(X)\in ob(D)\) via \(G\) as well.
 </p>
 
 <p>
