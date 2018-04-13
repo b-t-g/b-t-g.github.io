@@ -30,7 +30,7 @@ to the "homomorphism of functors" viewpoint, I'll unwind the analogy a bit more.
 <p>
 Now, what is a homomorphism, really? A map which preserves the structure of its argument. I.e., a group homomorphism is a map which sends groups to groups,
 a "category homomorphism" (functor) sends categories to categories, etc. This doesn't get us much further without first, ironically, taking a step back; what is the "structure of a functor"?
-It's a strange question with a straightforward answer, you apply it. You give me an element of category \(C\), I'll give you an element of category \(D\). Similarly, you give me a morphism in \(C\),
+It's a strange question with a straightforward answer: you apply it. You give me an element of category \(C\), I'll give you an element of category \(D\). Similarly, you give me a morphism in \(C\),
 I'll give you a morphism in \(D\).
 </p>
 
@@ -50,7 +50,7 @@ Where \(f\in mor(X,Y)\)
 
 <p>
 So how does this show those properties I said earlier? If I have a functor \(F\), I can apply it to an element \(X\) and get an element of \(D\), the top arrow says that you can take that
-element \(F(X)\) and get another element \(G(X)\) of \(D\) the bottom arrow is the same story. Therefore, we have the object part down. If I have some object from \(D\) via \(F\), I can get some
+element \(F(X)\) and get another element \(G(X)\) of \(D\). The bottom arrow is the same story. So, we have the object part down. If I have some object from \(D\) via \(F\), I can get some
 objects from \(D\) via \(G\) as well.
 </p>
 
@@ -85,7 +85,7 @@ and I suspect that there may be an element of that here. Nonetheless, even thoug
 <h3 id="org62a86c1">Chain complexes</h3>
 <div class="outline-text-3" id="text-org62a86c1">
 <p>
-A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\) \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
+A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
 </p>
 
 <p>
@@ -128,5 +128,16 @@ It can be proven via <a href="https://en.wikipedia.org/wiki/Five_lemma#Proof">di
 So, even though natural transformations may be intimidating at first, it is simply a way to say that two functors have the same structure; I hope this explanation has been helpful!
 </p>
 </div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+If you aren't familiar with modules, replace all instances with "R-module" with "vector space".
+</p></div></div>
+
+
 </div>
 </div>
