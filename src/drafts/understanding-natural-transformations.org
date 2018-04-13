@@ -80,3 +80,5 @@ A morphism of chain complexes from $C_\bullet \to D_\bullet$ is a collection of 
 \end{CD}\]
 
 It can be proven via [[https://en.wikipedia.org/wiki/Five_lemma#Proof][diagram chasing]] that $u$ sends cycles to cycles and boundaries to boundaries, which is to say, chain complex morphisms preserve precisely the structure that we're interested in.
+
+So, even though natural transformations may be intimidating at first, it is simply a way to say that two functors have the same structure; I hope this explanation has been helpful!
