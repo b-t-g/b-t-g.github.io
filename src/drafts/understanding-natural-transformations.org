@@ -50,12 +50,12 @@ It's worth pointing out that our choice of $X$ is arbitrary; it could have been 
 arbitrary objects?
 
 Consider the following (silly) example for groups. Here I take $F,G:Grp\to Grp$ to be the identity functors. I take $\eta_\mathbb{Z}$ to be the identity function but I take
-$\eta_{\mathbb{Z}\slash2\mathbb{Z}}$ to be the zero function. If we didn't specify the bottom arrow, the resulting in the non-commutative diagram would represent a natural transformation.
+$\eta_{\mathbb{Z}/2\mathbb{Z}}$ to be the zero function. If we didn't specify the bottom arrow, the resulting in the non-commutative diagram would represent a natural transformation.
 
 \[\begin{CD}
 \mathbb{Z}                   @>x\mapsto x>> \mathbb{Z} \\
 @Vx\mapsto x\mod 2VV                        @VVx\mapsto x\mod 2V \\
-\mathbb{Z}\slash 2\mathbb{Z} @>0>>          \mathbb{Z}\slash 2\mathbb{Z}
+\mathbb{Z}/ 2\mathbb{Z} @>0>>          \mathbb{Z}/ 2\mathbb{Z}
 \end{CD} \]
 
 Explicitly stating that the bottom arrow makes the diagram commute is surprisingly deep. The bottom arrow is the condition that our functors change morphisms and objects in a way that are
