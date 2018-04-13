@@ -27,12 +27,13 @@ to the "homomorphism of functors" viewpoint, this posts unwinds that analogy a b
 * What is a homomorphism, really?
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
 a "category homomorphism" (functor) sends categories to categories, etc.
-So, with that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an element of category $C$,
-I'll give you an element of category $D$. Similarly, you give me a morphism in $C$, I'll give you a morphism in $D$.
+
+With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from category $C$,
+I'll give you an object from category $D$. Similarly, you give me a morphism from $C$, I'll give you a morphism from $D$.
 
 Before we go diving into the intuition, here's the definition of a natural transformation (which is a 90 degree rotation from the one [[https://en.wikipedia.org/wiki/Natural_transformation#Definition][listed on Wikipedia]]).
 
-A natural transformation between two functors $F,G:C\to D$ associates to each object $X\in C$ a morphism $\eta_X: F(X)\to G(X)$ such that the following diagram commutes.
+A natural transformation between two functors $F,G:C\to D$ associates to each object $X\in ob(C)$[fn:1] a morphism $\eta_X: F(X)\to G(X)$ such that the following diagram commutes.
 \[\begin{CD}
 F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
@@ -40,8 +41,8 @@ F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
 Where $f\in mor(X,Y)$[fn:1]
 
-So how does this show those properties I said earlier? If I have a functor $F$, I can apply it to an element $X$ and get an element of $D$, the top arrow says that you can take that
-element $F(X)$ and get another element $G(X)$ of $D$. The bottom arrow is the same story. So, we have the object part down. If I have some object $F(X)\in ob(D)$[fn:2] via $F$ (call it $F(X)$),
+How does this show those properties I said earlier? If I have a functor $F$, I can apply it to an object $X$ and get an object from $D$, the top arrow says that you can take that
+object $F(X)$ and get another object $G(X)$ from $D$. The bottom arrow is the same story. So, we have the object part down. If I have some object $F(X)\in ob(D)$[fn:2] via $F$ (call it $F(X)$),
 I can get some object from $G(X)\in ob(D)$ via $G$ as well.
 
 Now what about morphisms being preserved? If we stop here, with only mappings of objects, we have the following diagram:
@@ -52,8 +53,8 @@ F(X) @>\eta_X>> G(X) \\
 F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
 
-This could put is in an uncomfortable situation where we map to objects $G(X)$ and $G(Y)$ that have no morphisms between them. The arrow on the right is therefore the constraint
-that we need to have a morphism in $D$ from the derived object $G(X)$ to the derived object $G(Y)$.
+This could put is in an uncomfortable situation where we map to objects $G(X)$ and $G(Y)$ that have no morphisms between them. The arrow on the right says that we need to have a morphism in $D$
+from the derived object $G(X)$ to the derived object $G(Y)$.
 
 * An odd example that helped it click for me
 At a Haskell meetup, the organizer ([[https://gbaz.github.io/][Gershom Bazerman]]) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'",
@@ -76,7 +77,7 @@ we want to know the extent to which this diagram is not exact.
 From now on, I'll simply refer to the morphisms $d_i$ as simply $d$.
 ** Morphisms of chain complexes
 
-A morphism of chain complexes from $C_\bullet \to D_\bullet$ is a collection of morphisms $u_i: C_i\to D_i$ such that the following diagram commutes.
+A morphism of chain complexes from $C_\bullet \to D_\bullet$ is a collection of morphisms $u_i: C_i\to D_i$ such that the following diagram commutes:
 
 \[\begin{CD}
 ... @>d>> C_{n+1} @>d>> C_n @>d>> C_{n-1} @>d>> ...\\
@@ -86,8 +87,8 @@ A morphism of chain complexes from $C_\bullet \to D_\bullet$ is a collection of 
 
 It can be proven via [[https://en.wikipedia.org/wiki/Five_lemma#Proof][diagram chasing]] that $u$ sends cycles to cycles and boundaries to boundaries, which is to say, chain complex morphisms preserve precisely the structure that we're interested in.
 
-So, even though natural transformations may be intimidating at first, it is simply a way to say that two functors have the same structure; I hope this explanation has been helpful!
+Even though natural transformations may be intimidating at first, it is simply a way to say that two functors have the same structure; I hope this explanation has been helpful!
 
-[fn:1] Here I take $mor(X,Y)$ to mean the morphisms between the objects $X$ and $Y$ in the category $C$
-[fn:2] Here I take $ob(C)$ to mean the objects of the category $C$.
+[fn:1] Here I take $ob(C)$ to mean the objects of the category $C$.
+[fn:2] Here I take $mor(X,Y)$ to mean the morphisms between the objects $X$ and $Y$ in the category $C$
 [fn:3] If you aren't familiar with modules, replace all instances with "R-module" with "vector space".

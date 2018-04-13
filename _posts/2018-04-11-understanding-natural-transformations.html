@@ -39,8 +39,11 @@ to the "homomorphism of functors" viewpoint, this posts unwinds that analogy a b
 <p>
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
 a "category homomorphism" (functor) sends categories to categories, etc.
-So, with that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an element of category \(C\),
-I'll give you an element of category \(D\). Similarly, you give me a morphism in \(C\), I'll give you a morphism in \(D\).
+</p>
+
+<p>
+With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from category \(C\),
+I'll give you an object from category \(D\). Similarly, you give me a morphism from \(C\), I'll give you a morphism from \(D\).
 </p>
 
 <p>
@@ -48,18 +51,18 @@ Before we go diving into the intuition, here's the definition of a natural trans
 </p>
 
 <p>
-A natural transformation between two functors \(F,G:C\to D\) associates to each object \(X\in C\) a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram commutes.
+A natural transformation between two functors \(F,G:C\to D\) associates to each object \(X\in ob(C)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram commutes.
 \[\begin{CD}
 F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
 F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
-Where \(f\in mor(X,Y)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+Where \(f\in mor(X,Y)\)<sup><a id="fnr.1.100" class="footref" href="#fn.1">1</a></sup>
 </p>
 
 <p>
-So how does this show those properties I said earlier? If I have a functor \(F\), I can apply it to an element \(X\) and get an element of \(D\), the top arrow says that you can take that
-element \(F(X)\) and get another element \(G(X)\) of \(D\). The bottom arrow is the same story. So, we have the object part down. If I have some object \(F(X)\in ob(D)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> via \(F\) (call it \(F(X)\)),
+How does this show those properties I said earlier? If I have a functor \(F\), I can apply it to an object \(X\) and get an object from \(D\), the top arrow says that you can take that
+object \(F(X)\) and get another object \(G(X)\) from \(D\). The bottom arrow is the same story. So, we have the object part down. If I have some object \(F(X)\in ob(D)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> via \(F\) (call it \(F(X)\)),
 I can get some object from \(G(X)\in ob(D)\) via \(G\) as well.
 </p>
 
@@ -76,8 +79,8 @@ F(Y) @>\eta_Y>> G(Y)
 </p>
 
 <p>
-This could put is in an uncomfortable situation where we map to objects \(G(X)\) and \(G(Y)\) that have no morphisms between them. The arrow on the right is therefore the constraint
-that we need to have a morphism in \(D\) from the derived object \(G(X)\) to the derived object \(G(Y)\).
+This could put is in an uncomfortable situation where we map to objects \(G(X)\) and \(G(Y)\) that have no morphisms between them. The arrow on the right says that we need to have a morphism in \(D\)
+from the derived object \(G(X)\) to the derived object \(G(Y)\).
 </p>
 </div>
 </div>
@@ -121,7 +124,7 @@ From now on, I'll simply refer to the morphisms \(d_i\) as simply \(d\).
 <h3 id="org8432e8e">Morphisms of chain complexes</h3>
 <div class="outline-text-3" id="text-org8432e8e">
 <p>
-A morphism of chain complexes from \(C_\bullet \to D_\bullet\) is a collection of morphisms \(u_i: C_i\to D_i\) such that the following diagram commutes.
+A morphism of chain complexes from \(C_\bullet \to D_\bullet\) is a collection of morphisms \(u_i: C_i\to D_i\) such that the following diagram commutes:
 </p>
 
 <p>
@@ -137,7 +140,7 @@ It can be proven via <a href="https://en.wikipedia.org/wiki/Five_lemma#Proof">di
 </p>
 
 <p>
-So, even though natural transformations may be intimidating at first, it is simply a way to say that two functors have the same structure; I hope this explanation has been helpful!
+Even though natural transformations may be intimidating at first, it is simply a way to say that two functors have the same structure; I hope this explanation has been helpful!
 </p>
 </div>
 </div>
@@ -147,11 +150,11 @@ So, even though natural transformations may be intimidating at first, it is simp
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-Here I take \(mor(X,Y)\) to mean the morphisms between the objects \(X\) and \(Y\) in the category \(C\)
+Here I take \(ob(C)\) to mean the objects of the category \(C\).
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
-Here I take \(ob(C)\) to mean the objects of the category \(C\).
+Here I take \(mor(X,Y)\) to mean the morphisms between the objects \(X\) and \(Y\) in the category \(C\)
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
