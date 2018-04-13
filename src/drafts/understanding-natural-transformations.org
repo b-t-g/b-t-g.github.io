@@ -66,8 +66,8 @@ A chain complex $C_\bullet$ (or just $C$) is a collection of $R-\text{modules}$[
 \end{CD}\]
 
 In particular, note that the kernel of $d_{i-1}$ is a submodule of the image of $d_i$ (since $d_{i-1}\circ d_{i} = 0$), one of the things that we're interested in when we study chain complexes
- is the kernel of $d_{i-1}$ (called cycles) and the image of $d_i$ (called boundaries) in particular how much bigger the kernel is than the image; in other words, we care to measure the degree
-to which this diagram is not exact.
+ is the kernel of $d_{i-1}$ (called cycles) and the image of $d_i$ (called boundaries). In particular, we care about how much bigger the kernel is than the image; in other words,
+we want to know the extent to which this diagram is not exact.
 
 From now on, I'll simply refer to the morphisms $d_i$ as simply $d$.
 ** Morphisms of chain complexes
