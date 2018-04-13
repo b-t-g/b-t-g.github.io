@@ -33,11 +33,14 @@ In this post, I'll talk about my intuition for natural transformations and, roug
 to the "homomorphism of functors" viewpoint, this posts unwinds that analogy a bit more.
 </p>
 
+<div id="outline-container-orgf5b294b" class="outline-2">
+<h2 id="orgf5b294b">What is a homomorphism, really?</h2>
+<div class="outline-text-2" id="text-orgf5b294b">
 <p>
-Now, what is a homomorphism, really? It's just a map which preserves the structure of its argument. I.e., a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. This doesn't get us much further without first, ironically, taking a step back and asking the question
- what is the "structure of a functor"? It's a strange question with a straightforward answer: you apply it. You give me an element of category \(C\), I'll give you an element of category \(D\).
-Similarly, you give me a morphism in \(C\), I'll give you a morphism in \(D\).
+At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
+a "category homomorphism" (functor) sends categories to categories, etc.
+So, with that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an element of category \(C\),
+I'll give you an element of category \(D\). Similarly, you give me a morphism in \(C\), I'll give you a morphism in \(D\).
 </p>
 
 <p>
@@ -45,23 +48,23 @@ Before we go diving into the intuition, here's the definition of a natural trans
 </p>
 
 <p>
-A natural transformation between two functors \(F,G:C\to D\) associates each object \(X\in C\) with a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram commutes.
+A natural transformation between two functors \(F,G:C\to D\) associates to each object \(X\in C\) a morphism \(\eta_X: F(X)\to G(X)\) such that the following diagram commutes.
 \[\begin{CD}
 F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
 F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
-Where \(f\in mor(X,Y)\)
+Where \(f\in mor(X,Y)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
 </p>
 
 <p>
 So how does this show those properties I said earlier? If I have a functor \(F\), I can apply it to an element \(X\) and get an element of \(D\), the top arrow says that you can take that
-element \(F(X)\) and get another element \(G(X)\) of \(D\). The bottom arrow is the same story. So, we have the object part down. If I have some object from \(D\) via \(F\), I can get some
-objects from \(D\) via \(G\) as well.
+element \(F(X)\) and get another element \(G(X)\) of \(D\). The bottom arrow is the same story. So, we have the object part down. If I have some object \(F(X)\in ob(D)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> via \(F\) (call it \(F(X)\)),
+I can get some object from \(G(X)\in ob(D)\) via \(G\) as well.
 </p>
 
 <p>
-Now what about morphisms being preserved? Note that if we stop here, with only mappings of objects, we have the following diagram:
+Now what about morphisms being preserved? If we stop here, with only mappings of objects, we have the following diagram:
 </p>
 
 <p>
@@ -73,16 +76,19 @@ F(Y) @>\eta_Y>> G(Y)
 </p>
 
 <p>
-This could put is in an uncomfortable situation where we map to objects \(G(X)\) and \(G(Y)\) that have no morphisms between them. The arrow on the right now amounts to us needing to have a morphism in
-\(D\) between the derived objects \(G(X)\) and \(G(Y)\).
+This could put is in an uncomfortable situation where we map to objects \(G(X)\) and \(G(Y)\) that have no morphisms between them. The arrow on the right is therefore the constraint
+that we need to have a morphism in \(D\) from the derived object \(G(X)\) to the derived object \(G(Y)\).
 </p>
+</div>
+</div>
 
-<div id="outline-container-org5da8fb0" class="outline-2">
-<h2 id="org5da8fb0">An odd example that made it click for me</h2>
-<div class="outline-text-2" id="text-org5da8fb0">
+<div id="outline-container-org07ee7a1" class="outline-2">
+<h2 id="org07ee7a1">An odd example that helped it click for me</h2>
+<div class="outline-text-2" id="text-org07ee7a1">
 <p>
 At a Haskell meetup, the organizer (<a href="https://gbaz.github.io/">Gershom Bazerman</a>) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'",
-and I suspect that there may be an element of that here. Nonetheless, even though it's not a natural transformation, it helped me further understand "structure preserving functions".
+and I suspect that there may be an element of that here. Nonetheless, even though the example I'm about to provide is not a natural transformation, it helped me further understand
+"structure preserving functions".
 </p>
 </div>
 
@@ -91,7 +97,7 @@ and I suspect that there may be an element of that here. Nonetheless, even thoug
 <h3 id="org62a86c1">Chain complexes</h3>
 <div class="outline-text-3" id="text-org62a86c1">
 <p>
-A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
+A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
 </p>
 
 <p>
@@ -141,6 +147,14 @@ So, even though natural transformations may be intimidating at first, it is simp
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+Here I take \(mor(X,Y)\) to mean the morphisms between the objects \(X\) and \(Y\) in the category \(C\)
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+Here I take \(ob(C)\) to mean the objects of the category \(C\).
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
 If you aren't familiar with modules, replace all instances with "R-module" with "vector space".
 </p></div></div>
 
