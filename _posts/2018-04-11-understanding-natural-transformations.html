@@ -68,17 +68,17 @@ we require a morphism from \(\eta_X:F(X)\to G(X)\), which is to say that we need
 </p>
 
 <p>
-The bottom arrow is surprisingly deep. If we stopped here, we would have the following diagram:
-\[\begin{CD}
-F(X) @>\eta_X>> G(X) \\
-@VF(f)VV        @VVG(f)V \\
-F(Y) @.         G(Y)
-\end{CD} \]
+It's worth pointing out that our choice of \(X\) is arbitrary; it could have been any object in \(ob(C)\), so do we really need to specify the bottom arrow since we already have a mapping of
+arbitrary objects?
 </p>
 
 <p>
-Now what about morphisms being preserved? Well it turns out that we get that for free! From <a href="https://en.wikipedia.org/wiki/Functor#Definition">the definition of a functor</a>, for a functor \(F\), if we have \(f\in mor(X,Y)\), we automatically get a morphism
-\(F(f)\in mor(F(X), F(Y))\)<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>.
+Explicitly stating that the bottom arrow makes the diagram commute is surprisingly deep. The bottom arrow is the condition that our functors change morphisms in a compatible way.
+</p>
+
+<p>
+That is to say, if I have an object \(X\in ob(C)\) and a morphism \(f\in mor(X,Y)\) and I take my functors and apply them to \(X\) to get \(F(X)\) and \(G(X)\). Now I apply the induced morphism \(F(f)\) to
+\(F(X)\) and \(G(f)\) to \(G(X)\) to get \(F(Y)\) and \(G(Y)\) respectively.
 </p>
 </div>
 </div>
@@ -98,7 +98,7 @@ and I suspect that there may be an element of that here. Nonetheless, even thoug
 <h3 id="org62a86c1">Chain complexes</h3>
 <div class="outline-text-3" id="text-org62a86c1">
 <p>
-A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
+A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
 </p>
 
 <p>
@@ -156,10 +156,6 @@ Here I take \(mor(X,Y)\) to mean the morphisms between the objects \(X\) and \(Y
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
-Assuming \(F\) is a <a href="https://en.wikipedia.org/wiki/Functor#Covariance_and_contravariance">covariant functor</a>.
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
 If you aren't familiar with modules, replace all instances with "R-module" with "vector space".
 </p></div></div>
 

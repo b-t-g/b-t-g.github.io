@@ -46,17 +46,13 @@ Where $f\in mor(X,Y)$[fn:2]
 How does this construction have those properties I talked about earlier? If I have two functors $F$ and $G$, I can apply it them to an object $X$ and get two objects from $D$, the top arrow says that
 we require a morphism from $\eta_X:F(X)\to G(X)$, which is to say that we need $F(X)$ and $G(X)$ to have the same structure (whatever that means in our category of choice).
 
-The bottom arrow is surprisingly deep. If we stopped here, we would have the following diagram:
-\[\begin{CD}
-F(X) @>\eta_X>> G(X) \\
-@VF(f)VV        @VVG(f)V \\
-F(Y) @.         G(Y)
-\end{CD} \]
+It's worth pointing out that our choice of $X$ is arbitrary; it could have been any object in $ob(C)$, so do we really need to specify the bottom arrow since we already have a mapping of
+arbitrary objects?
 
-That is to say,
+Explicitly stating that the bottom arrow makes the diagram commute is surprisingly deep. The bottom arrow is the condition that our functors change morphisms in a compatible way.
 
-Now what about morphisms being preserved? Well it turns out that we get that for free! From [[https://en.wikipedia.org/wiki/Functor#Definition][the definition of a functor]], for a functor $F$, if we have $f\in mor(X,Y)$, we automatically get a morphism
-$F(f)\in mor(F(X), F(Y))$[fn:3].
+That is to say, if I have an object $X\in ob(C)$ and a morphism $f\in mor(X,Y)$ and I take my functors and apply them to $X$ to get $F(X)$ and $G(X)$. Now I apply the induced morphism $F(f)$ to
+$F(X)$ and $G(f)$ to $G(X)$ to get $F(Y)$ and $G(Y)$ respectively.
 
 * An odd example that helped it click for me
 At a Haskell meetup, the organizer ([[https://gbaz.github.io/][Gershom Bazerman]]) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'",
@@ -93,5 +89,4 @@ Even though natural transformations may be intimidating at first, it is simply a
 
 [fn:1] Here I take $ob(C)$ to mean the objects of the category $C$.
 [fn:2] Here I take $mor(X,Y)$ to mean the morphisms between the objects $X$ and $Y$ in the category $C$.
-[fn:3] Assuming $F$ is a [[https://en.wikipedia.org/wiki/Functor#Covariance_and_contravariance][covariant functor]].
 [fn:4] If you aren't familiar with modules, replace all instances with "R-module" with "vector space".
