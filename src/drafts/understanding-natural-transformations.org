@@ -29,12 +29,13 @@ I'll give you a morphism in $D$.
 
 Before we go diving into the intuition, here's the definition of a natural transformation (which is a 90 degree rotation from the one [[https://en.wikipedia.org/wiki/Natural_transformation#Definition][listed on Wikipedia]]).
 
+A natural transformation is a morphism $\eta: D\to D$ such that for each $X,Y\in ob(C)$, we have that the following diagram commutes.
 \[\begin{CD}
 F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
 F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
-Where $F$ and $G$ are functors between categories $C$ and $D$ and $X$ and $Y$ are objects of $C$ such that this diagram commutes.
+Where $f\in mor(X,Y)$
 
 So how does this show those properties I said earlier? If I have a functor $F$, I can apply it to an element $X$ and get an element of $D$, the top arrow says that you can take that
 element $F(X)$ and get another element $G(X)$ of $D$ the bottom arrow is the same story. Therefore, we have the object part down. If I have some object from $D$ via $F$, I can get some

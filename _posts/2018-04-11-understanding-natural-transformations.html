@@ -39,12 +39,13 @@ Before we go diving into the intuition, here's the definition of a natural trans
 </p>
 
 <p>
+A natural transformation is a morphism \(\eta: D\to D\) such that for each \(X,Y\in ob(C)\), we have that the following diagram commutes.
 \[\begin{CD}
 F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
 F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
-Where \(F\) and \(G\) are functors between categories \(C\) and \(D\) and \(X\) and \(Y\) are objects of \(C\) such that this diagram commutes.
+Where \(f\in mor(X,Y)\)
 </p>
 
 <p>
