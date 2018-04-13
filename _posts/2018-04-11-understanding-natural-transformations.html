@@ -38,7 +38,7 @@ to the "homomorphism of functors" viewpoint, this post unwinds that analogy a bi
 <div class="outline-text-2" id="text-orgf5b294b">
 <p>
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category \(C\), for two object \(X,Y\in ob(C)[fn:1]\), a morphism \(f:X\to Y\) means
+a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category \(C\), for two object \(X,Y\in ob(C)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>, a morphism \(f:X\to Y\) means
 that \(Y\) has the same structure as \(F\). Even though that last point sounds like a needless abstraction, we'll be using it later.
 </p>
 
@@ -59,7 +59,7 @@ F(X) @>\eta_X>> G(X) \\
 @VF(f)VV        @VVG(f)V \\
 F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
-Where \(f\in mor(X,Y)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+Where \(f\in mor(X,Y)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>
 </p>
 
 <p>
@@ -70,7 +70,7 @@ The bottom arrow is a similar story: If I have some
 
 <p>
 Now what about morphisms being preserved? Well it turns out that we get that for free! From <a href="https://en.wikipedia.org/wiki/Functor#Definition">the definition of a functor</a>, for a functor \(F\), if we have \(f\in mor(X,Y)\), we automatically get a morphism
-\(F(f)\in mor(F(X), F(Y))\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>.
+\(F(f)\in mor(F(X), F(Y))\)<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>.
 </p>
 </div>
 </div>
@@ -90,7 +90,7 @@ and I suspect that there may be an element of that here. Nonetheless, even thoug
 <h3 id="org62a86c1">Chain complexes</h3>
 <div class="outline-text-3" id="text-org62a86c1">
 <p>
-A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
+A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
 </p>
 
 <p>
@@ -140,14 +140,18 @@ Even though natural transformations may be intimidating at first, it is simply a
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-Here I take \(mor(X,Y)\) to mean the morphisms between the objects \(X\) and \(Y\) in the category \(C\).
+Here I take \(ob(C)\) to mean the objects of the category \(C\).
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
-Assuming \(F\) is a <a href="https://en.wikipedia.org/wiki/Functor#Covariance_and_contravariance">covariant functor</a>.
+Here I take \(mor(X,Y)\) to mean the morphisms between the objects \(X\) and \(Y\) in the category \(C\).
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+Assuming \(F\) is a <a href="https://en.wikipedia.org/wiki/Functor#Covariance_and_contravariance">covariant functor</a>.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
 If you aren't familiar with modules, replace all instances with "R-module" with "vector space".
 </p></div></div>
 

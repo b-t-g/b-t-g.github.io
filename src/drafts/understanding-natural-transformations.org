@@ -26,7 +26,7 @@ to the "homomorphism of functors" viewpoint, this post unwinds that analogy a bi
 
 * What is a homomorphism, really?
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category $C$, for two object $X,Y\in ob(C)[fn:1]$, a morphism $f:X\to Y$ means
+a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category $C$, for two object $X,Y\in ob(C)$[fn:1], a morphism $f:X\to Y$ means
 that $Y$ has the same structure as $F$. Even though that last point sounds like a needless abstraction, we'll be using it later.
 
 With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from category $C$,
