@@ -75,7 +75,7 @@ On the other hand, having the whole pipeline running on one host made it easy to
 <li><a id="orgac8b1b9"></a>Question: What's the TCP throughput?<br />
 <div class="outline-text-4" id="text-orgac8b1b9">
 <p>
-I started off with seeing how much traffic was going through the pipeline, even though the exact data going from one point to the next may be different (because data may be added or removed),
+I started off with seeing how much traffic was going through the pipeline; even though the exact data going from one point to the next may be different (because data may be added or removed),
 it ended up being useful information down the line. After looking around the available tcp tools, I found tcptop to be the best tool for this particular job.
 </p>
 <div class="org-src-container">
@@ -103,7 +103,7 @@ service is a bottleneck.
 <li><a id="orgfde2fb1"></a>Question: What services are causing the most latency?<br />
 <div class="outline-text-4" id="text-orgfde2fb1">
 <p>
-I also wanted to look at the processes responsible for the most latency across the entire system. The syscount command with the -L flag (aggregate by latency and not the amount of times a
+I also wanted to look at the processes responsible for the most latency across the entire system. The syscount command with the -L flag (aggregate by latency of a syscall and not the amount of times a
 syscall is made) and the -P flag (aggregate by processes and not syscalls), was what I needed:
 </p>
 <div class="org-src-container">
@@ -120,7 +120,7 @@ The computer was running things other than just the pipeline, so the output was 
 </p>
 </div>
 <p>
-Python being that high was surprising to me. So I decided to run
+Python being that high was surprising to me. To investigate further, I ran:
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">./syscount -L -i 1 -p $(pgrep python3)
@@ -128,7 +128,7 @@ Python being that high was surprising to me. So I decided to run
 </div>
 
 <p>
-Where the -i 1 flag just means "print output every second" and -p means "for this PID only".
+Where the -i 1 option just means "print output every second" and -p means "for this PID only".
 </p>
 
 
@@ -173,7 +173,7 @@ Running
 </pre>
 <p>
 I was able to see that the latency for syncing the log had some of the highest latency and contained most of
-the filesystem operations taking over 1 ms across the entire system. The exact time varied wildly, the distribution seemed to be roughly bimodal with 15 milliseconds and about
+the filesystem operations taking over 1 ms across the entire system. The exact time varied wildly; the distribution seemed to be roughly bimodal with 15 milliseconds and about
 30 milliseconds being the most common. I saw syncs take as long as over 150 milliseconds, but they were atypical. The syncs were relatively consistent in the sense that they were never idle
 (although their latencies did vary), this did not seem like a bottleneck.
 </p>
@@ -205,7 +205,7 @@ waiting for data, which would manifest in fewer operation log syncs. However, th
 </p>
 
 <p>
-Just to make sure that the database wasn't a problem, I looked at the number of current operations to the database, it was constantly 5 or 6, so everything checked out here!
+Just to make sure that the database wasn't a problem, I looked at the number of current outstanding database operations, it was constantly 5 or 6, so everything checked out here!
 Even though the mystery of Python's sleep was still unsolved, it did not seem like the problem I was looking for.
 </p>
 </div>
@@ -222,8 +222,8 @@ Checking for the highest latency syscalls running this:
 ./syscount -L -p &lt;PID of loader&gt;
 </pre>
 <p>
-most of the latency was coming from epoll_wait, but about a third of a millisecond. Digging around in the source code, I could see that the loader service was polling the database's operation log.
-In light of this, that amount of latency makes sense since that's seems like a reasonable amount of latency for a request. Indeed, it seemed like most of the workload was from reading,
+most of the latency was coming from <a href="http://man7.org/linux/man-pages/man2/epoll_wait.2.html">epoll_wait</a>, but about a third of a millisecond. Digging around in the source code, I could see that the loader service was polling the database's operation log.
+In light of this, that amount of latency makes sense since that seems like a reasonable amount of latency for a request. Indeed, it seemed like most of the workload was from reading,
 receiving, and send/write syscalls. This ultimately led me to strongly consider that this could be a bottleneck.
 </p>
 
@@ -240,7 +240,7 @@ Unfortunately, the workload was coming from short-lived threads, so not much inf
 
 <p>
 I could still test the hypothesis that the loader was the bottleneck by turning my attention to the transaction log. Checking for high latency syscalls in the same way,
-I noticed that most of the latency was again coming from epoll_wait, this time, about a third of a second; this seemed a bit too long for me and led me to believe that the loader service is,
+I noticed that most of the latency was again coming from epoll_wait, this time, about a third of a second; this seemed to be a bit too long for me and led me to believe that the loader service is,
 indeed the bottleneck.
 </p>
 
@@ -261,9 +261,10 @@ First, observe the tcp throughput for the loader service:
 </div>
 
 <p>
-We want to know how much the operation log growing per second and compare that to how much data is going to the loader service over tcp. I found the location of the operation log and ran wc -c
-several times and noticed that the file stayed the same size. After scratching my head, I found out that the size of the operation log on disk is a fixed size after it gets to a certain size.
-This left the question of "What is the rate of new data going into the operation log over a 10 second period"? This time I ran:
+We want to know how much the operation log growing was growing over a ten second period (since I ran tcptop with the -i 10 option again) and compare that to how much data is going to the
+loader service over tcp. I found the location of the operation log and ran wc -c several times and noticed that the file stayed the same size. After scratching my head, I found out that the
+size of the operation log on disk is a fixed size after it gets to a certain size. This left the question of "What is the rate of new data going into the operation log over a 10 second period"?
+This time I ran:
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">./biotop
@@ -326,7 +327,7 @@ I suspect the reason you can get DTrace working with zones is because a zone is 
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
-If you are interested, Julia Evans has <a href="https://jvns.ca/blog/2018/02/24/an-ltrace-clone-using-ebpf/">several</a> <a href="https://jvns.ca/blog/2018/02/05/rust-bcc/">good</a> <a href="https://jvns.ca/blog/2018/01/31/spying-on-a-ruby-process-s-memory-allocations/">posts</a> on the subject.
+If you are interested in writing eBPF scripts, Julia Evans has <a href="https://jvns.ca/blog/2018/02/24/an-ltrace-clone-using-ebpf/">several</a> <a href="https://jvns.ca/blog/2018/02/05/rust-bcc/">good</a> <a href="https://jvns.ca/blog/2018/01/31/spying-on-a-ruby-process-s-memory-allocations/">posts</a> on the subject.
 </p></div></div>
 
 
