@@ -11,11 +11,12 @@ excerpt: My experience of tracking down a performance issue with BCC
 categories:
 - Linux
 - debugging
+latex_header: \usepackage{amscd}
 ---
 <p>
 <a href="https://github.com/iovisor/bcc">BCC</a>, a series of scripts using eBPF (a packet filter turned tracer for Linux), helped change my debugging perspective from "what is my code doing" to "why is the system behaving in such a way"
 and then answering those questions efficiently. By not digging into the source code prematurely, I spent more time understanding the behavior of the system and, when it was necessary to dive
-into the source code, I had a much better idea of where to look which prevented me from wasting my time stumbling through unfamiliar code.
+into the source code, I had a much better idea of where to look. This prevented me from wasting my time stumbling through unfamiliar code.
 </p>
 
 <p>
@@ -23,8 +24,8 @@ In this post, I'll cover:
 </p>
 <ul class="org-ul">
 <li>The problem I worked on</li>
-<li>The questions I asked while I debugged it generally</li>
-<li>How I used the tools I found helpful along the way (mostly from BCC)</li>
+<li>The questions I asked while I debugged it</li>
+<li>How I used the tools I found helpful along the way (which were mostly from BCC)</li>
 </ul>
 
 <div id="outline-container-org07162fe" class="outline-2">
@@ -32,7 +33,7 @@ In this post, I'll cover:
 <div class="outline-text-2" id="text-org07162fe">
 <p>
 As part of a job interview, I was given a data pipeline in a Docker environment and told to find as many things wrong with it as possible. There were a few things that needed to be addressed,
-but I'll discuss how I found a bottleneck in the pipeline. Since this was a part of a real job interview, I've intentionally obscured the names of some technologies used (namely the database
+but I'll focus on how I found a bottleneck in the pipeline. Since this was a part of a real job interview, I've intentionally obscured the names of some technologies used (namely the database
 and the transaction log).
 </p>
 </div>
@@ -58,7 +59,7 @@ and loads it into a transaction log.
 <h3 id="org996a87c">Aside: Difficulties posed by Docker</h3>
 <div class="outline-text-3" id="text-org996a87c">
 <p>
-It seems like Docker's default security model makes it a bit non-trivial to run BCC in the container; indeed, since a Docker container doesn't contain its own
+It seems like Docker's default security model makes it a bit non-trivial to run BCC in a container. Indeed, since a Docker container doesn't contain its own
 kernel (and BPF often involves instrumenting the kernel), this seems like an understandable constraint (although such a thing <a href="http://dtrace.org/blogs/bmc/2012/06/07/dtrace-in-the-zone/">is possible in principle</a> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>). A lot
 of very meaningful information can still be gleaned from running BCC tools on the host. On the one hand, that does, admittedly, make some useful scripts like <a href="https://github.com/iovisor/bcc/blob/master/tools/profile.py">profile</a> more difficult to use.
 On the other hand, having the whole pipeline running on one host made it easy to access system wide metrics such as TCP traffic and latency, so it's not all doom and gloom.
@@ -74,8 +75,8 @@ On the other hand, having the whole pipeline running on one host made it easy to
 <li><a id="orgac8b1b9"></a>Question: What's the TCP throughput?<br />
 <div class="outline-text-4" id="text-orgac8b1b9">
 <p>
-I started off with seeing how much traffic was going throughout the pipeline, even though the exact data going from one point to the next may be different (because data may be added or removed),
-but I found it useful down the line. After looking around the available tcp tools, I found tcptop to be the best tool for this particular job.
+I started off with seeing how much traffic was going through the pipeline, even though the exact data going from one point to the next may be different (because data may be added or removed),
+it ended up being useful information down the line. After looking around the available tcp tools, I found tcptop to be the best tool for this particular job.
 </p>
 <div class="org-src-container">
 <pre class="src src-bash">./tcptop -i 10
@@ -102,7 +103,7 @@ service is a bottleneck.
 <li><a id="orgfde2fb1"></a>Question: What services are causing the most latency?<br />
 <div class="outline-text-4" id="text-orgfde2fb1">
 <p>
-Next, I wanted to look at the processes responsible for the most latency across the entire system. the syscount command with the -L flag (aggregate by latency and not the amount of time a
+I also wanted to look at the processes responsible for the most latency across the entire system. The syscount command with the -L flag (aggregate by latency and not the amount of times a
 syscall is made) and the -P flag (aggregate by processes and not syscalls), was what I needed:
 </p>
 <div class="org-src-container">
@@ -110,7 +111,7 @@ syscall is made) and the -P flag (aggregate by processes and not syscalls), was 
 </pre>
 </div>
 <p>
-The computer was running things other than just the pipeline, so it was fairly noisy across the entire system, but I did see that Python and the database were pretty high up there.
+The computer was running things other than just the pipeline, so the output was fairly noisy, but I did see that Python and the database were pretty high up there.
 </p>
 
 
@@ -153,7 +154,7 @@ Some code calls select() with all three sets empty, nfds zero, and a non-NULL ti
 </p>
 </blockquote>
 <p>
-So Python is sleeping for half a second for &#x2013; some reason? There were some timeouts in the source code, tinkering with those didn't do anything. This prompted another question;
+So Python is sleeping for half a second for &#x2013; some reason? There were some timeouts in the source code, but tinkering with those didn't do anything. This prompted another question;
 is this responsible for latency downstream? Let's look at the database.
 </p>
 </div>
@@ -172,9 +173,9 @@ Running
 </pre>
 <p>
 I was able to see that the latency for syncing the log had some of the highest latency and contained most of
-the filesystem operations taking over 1 ms. The exact time varied wildly, the distribution seemed to be roughly bimodal with 8 milliseconds and about 30 milliseconds being the most common.
-I saw syncs take as long as over 150 milliseconds, but they were atypical. The syncs were relatively consistent in the sense that they were never idle (although their latencies did vary),
-this did not seem like a bottleneck.
+the filesystem operations taking over 1 ms across the entire system. The exact time varied wildly, the distribution seemed to be roughly bimodal with 15 milliseconds and about
+30 milliseconds being the most common. I saw syncs take as long as over 150 milliseconds, but they were atypical. The syncs were relatively consistent in the sense that they were never idle
+(although their latencies did vary), this did not seem like a bottleneck.
 </p>
 
 
@@ -200,7 +201,7 @@ Once again using strace to see the arguments of select, it was waiting on a few 
 </div>
 <p>
 I could see that it was waiting on file descriptors associated with the dummy service. This seemed troubling at first, but being blocked on that file descriptor means that it is
-waiting for data, which would manifest in fewer syncs of the operation log. However, the operation log was syncing regularly, so there were no latency issues with the database.
+waiting for data, which would manifest in fewer operation log syncs. However, the operation log was syncing regularly, so I concluded that there were no latency issues with the database.
 </p>
 
 <p>
@@ -222,7 +223,7 @@ Checking for the highest latency syscalls running this:
 </pre>
 <p>
 most of the latency was coming from epoll_wait, but about a third of a millisecond. Digging around in the source code, I could see that the loader service was polling the database's operation log.
-In light of this, that amount of latency makes sense since that's about the latency one could expect for a request. Indeed, it seemed like most of the workload was from reading,
+In light of this, that amount of latency makes sense since that's seems like a reasonable amount of latency for a request. Indeed, it seemed like most of the workload was from reading,
 receiving, and send/write syscalls. This ultimately led me to strongly consider that this could be a bottleneck.
 </p>
 
@@ -234,7 +235,7 @@ Running top, this process was consuming about 100% CPU, in an attempt to get som
 </pre>
 </div>
 <p>
-Unfortunately, the workload was coming from short-lived threads, not much information was gained from it (other than there being quite a few threads).
+Unfortunately, the workload was coming from short-lived threads, so not much information was gained from it (other than learning that the loader service spawns quite a few threads).
 </p>
 
 <p>
@@ -269,8 +270,7 @@ This left the question of "What is the rate of new data going into the operation
 </pre>
 </div>
 <p>
-I could see that much more data was
-running through the operation log as going through the loader service.
+I could see that much more data was running through the operation log than through the loader service.
 </p>
 
 
@@ -311,7 +311,7 @@ So there we have it, tracking down a bottleneck from beginning to end with the h
 <h2 id="org8dde1cc">Impressions about BCC and eBPF</h2>
 <div class="outline-text-2" id="text-org8dde1cc">
 <p>
-When I first heard about BCC, I had already known about DTrace; I initially wasn't as excited about it as I was when I first heard about DTrace because it's far more difficult to make
+When I first heard about BCC, I had already known about DTrace; I initially wasn't as excited about BCC and eBPF as I was when I first heard about DTrace because it's far more difficult to make
 new scripts. However, the pre-made scripts from the BCC-toolkit are incredibly powerful and I never really felt wanting for this project. As time goes on, who knows? Maybe
 <a href="https://github.com/ajor/bpftrace">bpftrace</a> or <a href="https://github.com/iovisor/ply">ply</a> will catch on or I'll make another post about how I wrote my own eBPF script!<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>
 </p>
