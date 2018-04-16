@@ -53,7 +53,7 @@ That is only half the story, however. We also want to make sure that morphisms $
 
 * Structure of morphisms
 Consider two morphisms $f: X\to Y$ and $g: Z\to W$ where $X,Y,Z,W\in ob(C)$. What is a reasonable criterion to say that $g$ has the same structure as $f$?
-A morphism consists broadly of two things, a domain and a codomain. What does it mean to preserve the structure of domain and codomain?
+A morphism consists broadly of two things, a domain and a codomain. What does it mean to preserve the structure of the domain and codomain?
 
 Recall that in a category $C$, object $Y$ "has the same structure" as $X$ if there exists a morphism $f: X\to Y$. With that in mind, we might say that a reasonable definition would be that two
 morphisms have the same structure such that the domains and the codomains have the same structure (since the domain and codomain are just objects). In other words,
