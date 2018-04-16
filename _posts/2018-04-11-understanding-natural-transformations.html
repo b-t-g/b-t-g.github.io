@@ -13,7 +13,7 @@ categories:
 latex_header: \usepackage{amscd}
 ---
 <p>
-Natural transformations are the gatekeeper to the rest of category theory. Once you understand them, adjoint functors and even the (in)famous monads unveil themselves. In fact,
+Natural transformations are the gatekeeper to the rest of category theory. Once you understand them, adjoint functors and even the (in)famous monads unveil themselves. Even
 the "correct" notion of two categories being equivalent (unsurprisingly called an <a href="https://en.wikipedia.org/wiki/Equivalence_of_categories">equivalence of categories</a>) relies on natural transformations.
 </p>
 
@@ -21,11 +21,11 @@ the "correct" notion of two categories being equivalent (unsurprisingly called a
 Despite this notion being critical, I've only really heard two explanations of them (both unenlightening):
 </p>
 <ul class="org-ul">
-<li>A natural transformations are "coordinate free transformations" (what does that even mean)</li>
-<li>A natural transformation is a "homomorphism of functors" (a bit too high-level to make sense "out of the box")</li>
+<li>Natural transformations are "coordinate free transformations" (what does that even mean)</li>
+<li>A natural transformation is a "homomorphism of functors" (a bit too high-level to make sense to me "out of the box")</li>
 </ul>
 <p>
-As is often the case for me, the best approach for me was stare at the diagram and figure out the intuition for myself.
+As is often the case for me, the best approach was stare at the diagram and figure out the intuition for myself.
 </p>
 
 <p>
@@ -38,12 +38,12 @@ to the "homomorphism of functors" viewpoint, this post unwinds that analogy a bi
 <div class="outline-text-2" id="text-orgf5b294b">
 <p>
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. In fact, in a general category \(C\), if, for two objects \(X,Y\in ob(C)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>, there is a morphism \(f:X\to Y\) this
+a "category homomorphism" (functor) sends categories to categories, etc. More generally, for an arbitrary category \(C\), if, for two objects \(X,Y\in ob(C)\)<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>, there is a morphism \(f:X\to Y\)
 means that \(Y\) has the same structure as \(X\). Even though that last point sounds like a needless abstraction, that insight will be useful later.
 </p>
 
 <p>
-With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from a category \(C\),
+With this in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from a category \(C\),
 I'll give you an object from category a \(D\). Similarly, you give me a morphism from \(C\), I'll give you a morphism from \(D\). In short, we will show that a natural
 transformation is a way to say that one functor has the same structure as another.
 </p>
@@ -75,11 +75,11 @@ Where \(f\in mor(X,Y)\)<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></su
 <div class="outline-text-3" id="text-orgb021111">
 <p>
 How does this construction have those properties I talked about earlier? If I have two functors \(F\) and \(G\), I can apply it them to an object \(X\) and get two objects from \(D\), the top arrow says that
-we require a morphism from \(\eta_X:F(X)\to G(X)\), which is to say that we need \(F(X)\) and \(G(X)\) to have the same structure (whatever that means in our particular category).
+we require a morphism from \(\eta_X:F(X)\to G(X)\), which is to say that \(F(X)\) and \(G(X)\) have the same structure (whatever that means in our particular category).
 </p>
 
 <p>
-That is only half the story, however. We also want to make sure that morphisms have the same structure as well; but first, we have to define what that even means.
+That is only half the story, however. We also want to make sure that morphisms \(F(f)\) and \(G(f)\) have the same structure as well; but first, we have to define what that even means.
 </p>
 </div>
 </div>
@@ -89,7 +89,7 @@ That is only half the story, however. We also want to make sure that morphisms h
 <h2 id="org5a00d51">Structure of morphisms</h2>
 <div class="outline-text-2" id="text-org5a00d51">
 <p>
-Consider two morphisms in a category \(C\), \(f: X\to Y\) and \(g: Z\to W\). What is a reasonable criterion to say that \(g\) has the same structure as \(f\)?
+Consider two morphisms in a category \(C\): \(\ f: X\to Y\) and \(g: Z\to W\). What is a reasonable criterion to say that \(g\) has the same structure as \(f\)?
 A morphism consists broadly of 2 things, a domain and a codomain.
 </p>
 
@@ -128,7 +128,7 @@ This looks fine at first glance, since we have that the domain and the codomain 
 <p>
 If we compose the top arrow with the right arrow, we get the morphism \(x\mapsto x\mod 3\). However, when we compose the left arrow with the bottom arrow, we get the morphism \(x\mapsto 0\).
 Because these resulting morphisms are different, it is possible to recover whether we mapped over via the domain or the codomain depending on what the resulting morphism is.
-This seems to indicate that the domain and codomain somehow have a different structure.
+This seems to indicate that the domain and codomain somehow have a different structure in this case.
 </p>
 
 <p>
@@ -149,8 +149,8 @@ Therefore, a natural transformation is just a way of saying that one functor map
 <h2 id="org07ee7a1">An odd example that helped it click for me</h2>
 <div class="outline-text-2" id="text-org07ee7a1">
 <p>
-At a Haskell meetup, the organizer (<a href="https://gbaz.github.io/">Gershom Bazerman</a>) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'",
-and I suspect that there may be an element of that here. Nonetheless, even though the example I'm about to provide is not a natural transformation, it helped me further understand
+At a Haskell meetup, the organizer (<a href="https://gbaz.github.io/">Gershom Bazerman</a>) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'";
+I suspect that there may be an element of that here. Nonetheless, even though the example I'm about to provide is not a natural transformation, it helped me further understand
 "structure preserving functions".
 </p>
 </div>
@@ -160,7 +160,7 @@ and I suspect that there may be an element of that here. Nonetheless, even thoug
 <h3 id="org62a86c1">Chain complexes</h3>
 <div class="outline-text-3" id="text-org62a86c1">
 <p>
-A chain complex \(C_\bullet\) (or just \(C\)) is a collection of \(R-\text{modules}\)<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
+A chain complex \(C_\bullet\) is a collection of \(R-\text{modules}\)<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup> \(C_i\) along with module homomorphisms \(d_i: C_i\to C_{i-1}\) such that \(d_{i-1}\circ d_{i} = 0\)
 </p>
 
 <p>
@@ -196,7 +196,7 @@ A morphism of chain complexes from \(C_\bullet \to D_\bullet\) is a collection o
 </p>
 
 <p>
-It can be proven via <a href="https://en.wikipedia.org/wiki/Five_lemma#Proof">diagram chasing</a> that \(u\) sends cycles to cycles and boundaries to boundaries, which is to say, chain complex morphisms preserve precisely the structure that we're interested in.
+It can be proven via <a href="https://en.wikipedia.org/wiki/Five_lemma#Proof">diagram chasing</a> that \(u\) sends cycles to cycles and boundaries to boundaries; which is to say, chain complex morphisms preserve precisely the structure that we're interested in.
 </p>
 
 <p>
