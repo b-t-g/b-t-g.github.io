@@ -29,7 +29,7 @@ At its core, a homomorphism is just a map which preserves the structure of its a
 a "category homomorphism" (functor) sends categories to categories, etc. More generally, for an arbitrary category $C$, if there exists a morphism $f: X\to Y$, where $X,Y\in\ ob(C)$[fn:1]
 then we generally think of $Y$ as having the same structure as $X$ within $C$. Even though that last point sounds like a needless abstraction, that insight will be useful later.
 
-With this in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from a category $X\in ob(C)$,
+With this in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object $X\in ob(C)$,
 I'll give you an object $F(X)\in ob(D)$. Similarly, you give me a morphism $f: X\to Y$ where $X,Y\in ob(C)$, I'll give you a morphism from $F(f): F(X)\to F(Y)$. In short, we will show that a natural
 transformation is a way to say that one functor has the same structure as another.
 
@@ -52,7 +52,7 @@ we require a morphism from $\eta_X:F(X)\to G(X)$, which is to say that $F(X)$ an
 That is only half the story, however. We also want to make sure that morphisms $F(f)$ and $G(f)$ have the same structure as well; but first, we have to define what that even means.
 
 * Structure of morphisms
-Consider two morphisms in a category $C$: $\ f: X\to Y$ and $g: Z\to W$. What is a reasonable criterion to say that $g$ has the same structure as $f$?
+Consider two morphisms $f: X\to Y$ and $g: Z\to W$ where $X,Y,Z,W\in ob(C)$. What is a reasonable criterion to say that $g$ has the same structure as $f$?
 A morphism consists broadly of 2 things, a domain and a codomain.
 
 Recall that in a category $C$, object $Y$ "has the same structure" as $X$ if there exists a morphism $f: X\to Y$. With that in mind, we might say that a reasonable definition would
@@ -67,7 +67,7 @@ Y    @>k>> W
 \\
 \textbf{Diagram A}\]
 
-I want to re-emphasize that, at this point, we do *not* require that this diagram be commutative (that is to say $j\circ g$ does not necessarily equal $f\circ k$).
+I want to re-emphasize that, at this point, we do *not* require that this diagram be commutative (that is to say $g\circ j$ does not necessarily equal $k\circ f$).
 
 This looks fine at first glance, since we have that the domain and the codomain have the same structure, but consider the following (silly) example:
 
@@ -81,14 +81,15 @@ If we compose the top arrow with the right arrow, we get the morphism $x\mapsto 
 Because these resulting morphisms are different, it is possible to recover whether we mapped over via the domain or the codomain depending on what the resulting morphism is.
 This seems to indicate that the domain and codomain somehow have a different structure in this case.
 
-That is to say, we want to map from either the domain or the codomain and achieve the same morphism. Therefore, we say that $g$ has the same structure as $f$ if diagram A (above) is commutative.
+So what we really want is to be able map from either the domain or the codomain and achieve the same morphism. Therefore, we say that $g$ has the same structure as $f$ if diagram A (above)
+is commutative.
 
 ** Intuition wrap-up
 Therefore, a natural transformation is just a way of saying that one functor maps objects and morphisms in a way that has the same structure as another functor.
 * An odd example that helped it click for me
 At a Haskell meetup, the organizer ([[https://gbaz.github.io/][Gershom Bazerman]]) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'";
 I suspect that there may be an element of that here. Nonetheless, even though the example I'm about to provide is not a natural transformation, it helped me further understand
-"structure preserving functions".
+"functions that preserve the structure of other functions".
 
 
 ** Chain complexes
