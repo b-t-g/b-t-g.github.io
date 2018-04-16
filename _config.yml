@@ -7,7 +7,7 @@
 
 # Site settings
 title: From Manifolds to Metal
-description: A blog about math and technology> # this means to ignore newlines until "baseurl:"
+description: A blog about math and technology # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://b-t-g.github.io" # the base hostname & protocol for your site
 github_username: b-t-g
