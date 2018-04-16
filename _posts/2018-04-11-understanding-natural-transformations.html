@@ -13,19 +13,19 @@ categories:
 latex_header: \usepackage{amscd}
 ---
 <p>
-Natural transformations are the gatekeeper to the rest of category theory. Once you understand them, adjoint functors and even the (in)famous monads unveil themselves. Even
+Natural transformations act as the gatekeeper to the rest of category theory. Once you understand them, adjoint functors and even the (in)famous monads unveil themselves. Even
 the "correct" notion of two categories being equivalent (unsurprisingly called an <a href="https://en.wikipedia.org/wiki/Equivalence_of_categories">equivalence of categories</a>) relies on natural transformations.
 </p>
 
 <p>
-Despite this notion being critical, I've only really heard two explanations of them (both unenlightening):
+Despite this notion being critical, I've only really heard two explanations of them; both are one sentence long and both are unenlightening:
 </p>
 <ul class="org-ul">
 <li>Natural transformations are "coordinate free transformations" (what does that even mean)</li>
-<li>A natural transformation is a "homomorphism of functors" (a bit too high-level to make sense to me "out of the box")</li>
+<li>A natural transformation is a "homomorphism of functors" (this is a bit too high-level to make sense to me "out of the box")</li>
 </ul>
 <p>
-As is often the case for me, the best approach was stare at the diagram and figure out the intuition for myself.
+As is often the case for me, the best approach was to stare at the diagram and figure out the intuition for myself.
 </p>
 
 <p>
@@ -45,7 +45,7 @@ then we generally think of \(Y\) as having the same structure as \(X\) within \(
 <p>
 With this in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object \(X\in ob(C)\),
 I'll give you an object \(F(X)\in ob(D)\). Similarly, you give me a morphism \(f: X\to Y\) where \(X,Y\in ob(C)\), I'll give you a morphism from \(F(f): F(X)\to F(Y)\). In short, we will show that a natural
-transformation is a way to say that one functor has the same structure as another.
+transformation is the correct notion of one functor having the same structure as another.
 </p>
 </div>
 </div>
@@ -90,7 +90,7 @@ That is only half the story, however. We also want to make sure that morphisms \
 <div class="outline-text-2" id="text-org5a00d51">
 <p>
 Consider two morphisms \(f: X\to Y\) and \(g: Z\to W\) where \(X,Y,Z,W\in ob(C)\). What is a reasonable criterion to say that \(g\) has the same structure as \(f\)?
-A morphism consists broadly of 2 things, a domain and a codomain.
+A morphism consists broadly of two things, a domain and a codomain.
 </p>
 
 <p>
@@ -128,7 +128,7 @@ This looks fine at first glance, since we have that the domain and the codomain 
 <p>
 If we compose the top arrow with the right arrow, we get the morphism \(x\mapsto x\mod 3\). However, when we compose the left arrow with the bottom arrow, we get the morphism \(x\mapsto 0\).
 Because these resulting morphisms are different, it is possible to recover whether we mapped over via the domain or the codomain depending on what the resulting morphism is.
-This seems to indicate that the domain and codomain somehow have a different structure in this case.
+This indicates that the domain and codomain somehow have a different structure in this case.
 </p>
 
 <p>
@@ -171,7 +171,7 @@ A chain complex \(C_\bullet\) is a collection of \(R-\text{modules}\)<sup><a id=
 </p>
 
 <p>
-In particular, note that the kernel of \(d_{i-1}\) is a submodule of the image of \(d_i\) (since \(d_{i-1}\circ d_{i} = 0\)), one of the things that we're interested in when we study chain complexes
+In particular, the kernel of \(d_{i-1}\) is a submodule of the image of \(d_i\) (since \(d_{i-1}\circ d_{i} = 0\)), one of the things that we're interested in when we study chain complexes
  is the kernel of \(d_{i-1}\) (called cycles) and the image of \(d_i\) (called boundaries). In particular, we care about how much bigger the kernel is than the image; in other words,
 we want to know the extent to which this diagram is not exact.
 </p>
