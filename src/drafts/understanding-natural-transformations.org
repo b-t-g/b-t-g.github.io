@@ -32,8 +32,40 @@ means that $Y$ has the same structure as $X$. Even though that last point sounds
 With that in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from a category $C$,
 I'll give you an object from category a $D$. Similarly, you give me a morphism from $C$, I'll give you a morphism from $D$.
 
-Before we go diving into the intuition, here's the definition of a natural transformation:
+* Structure of morphisms
+Before we get into natural transformations, it will be useful to discuss when we consider two morphisms to have the same structure. Consider two morphisms in a category $C$,
+$f: X\to Y$ and $g: Z\to W$. What is a reasonable criterion to say that $g$ has the same structure as $f$? A morphism consists of 2 things, a domain and a codomain.
 
+Recall that in a category $C$, object $Y$ "has the same structure" as $X$ if there exists a morphism $f: X\to Y$. With that in mind, we might say that a reasonable definition would
+be that two morphisms have the same structure such that the domains and the codomains have the same structure. In other words, we want a diagram that looks like this (not necessarily
+commutative):
+
+\[\begin{CD}
+X    @>j>> Z \\
+@VfVV      @VVgV \\
+Y    @>k>> W
+\end{CD}\\
+\\
+\begin{center}\textbf{Diagram A}\end{center}\]
+
+I want to re-emphasize that, at this point, we do *not* require that this diagram be commutative (that is do say $j\circ g$ does not necessarily equal $f\circ k$).
+
+This looks fine at first glance, since we have that the domain and the codomain have the same structure, but consider the following (silly) example:
+
+\[\begin{CD}
+\mathbb{Z}              @>x\mapsto x>> \mathbb{Z} \\
+@Vx\mapsto x\mod 2VV                   @VVx\mapsto x\mod 3V \\
+\mathbb{Z}/ 2\mathbb{Z} @>0>>          \mathbb{Z}/ 3\mathbb{Z}
+\end{CD} \]
+
+If we compose the top arrow with the right arrow, we get the morphism $x\mapsto x\mod 3$. However, when we compose the left arrow with the bottom arrow, we get the morphism $x\mapsto 0$.
+Because these resulting morphisms are different, it is possible to recover whether we mapped over via the domain or the codomain depending on what the resulting morphism is.
+This seems to indicate that the domain and codomain somehow have a different structure.
+
+That is to say, we want to map from either the domain or the codomain and achieve the same morphism. Therefore, we say that $g$ has the same structure as $f$ if diagram A (above) is commutative.
+
+* Natural transformations
+** The definition
 A natural transformation between two functors $F,G:C\to D$ associates to each object $X\in ob(C)$ a morphism $\eta_X: F(X)\to G(X)$ such that the following diagram
 commutes (which is a 90 degree rotation from the one [[https://en.wikipedia.org/wiki/Natural_transformation#Definition][listed on Wikipedia]]).
 \[\begin{CD}
@@ -43,6 +75,8 @@ F(Y) @>\eta_Y>> G(Y)
 \end{CD} \]
 Where $f\in mor(X,Y)$[fn:2]
 
+** The intuition
+
 How does this construction have those properties I talked about earlier? If I have two functors $F$ and $G$, I can apply it them to an object $X$ and get two objects from $D$, the top arrow says that
 we require a morphism from $\eta_X:F(X)\to G(X)$, which is to say that we need $F(X)$ and $G(X)$ to have the same structure (whatever that means in our particular category).
 
@@ -50,7 +84,7 @@ It's worth pointing out that our choice of $X$ is arbitrary; it could have been 
 arbitrary objects?
 
 Consider the following (silly) example for groups. Here I take $F,G:Grp\to Grp$ to be the identity functors. I take $\eta_\mathbb{Z}$ to be the identity function but I take
-$\eta_{\mathbb{Z}/2\mathbb{Z}}$ to be the zero function. If we didn't specify the bottom arrow, the resulting in the non-commutative diagram would represent a natural transformation.
+$\eta_{\mathbb{Z}/2\mathbb{Z}}$ to be the zero function. If we didn't specify the bottom arrow, the resulting non-commutative diagram would represent a natural transformation.
 
 \[\begin{CD}
 \mathbb{Z}                   @>x\mapsto x>> \mathbb{Z} \\
@@ -59,7 +93,7 @@ $\eta_{\mathbb{Z}/2\mathbb{Z}}$ to be the zero function. If we didn't specify th
 \end{CD} \]
 
 Explicitly stating that the bottom arrow makes the diagram commute is surprisingly deep. The bottom arrow is the condition that our functors change morphisms and objects in a way that are
-compatible with each other!
+compatible with each other! Something is the same regardless of whether you started in the domain or codomain.
 
 * An odd example that helped it click for me
 At a Haskell meetup, the organizer ([[https://gbaz.github.io/][Gershom Bazerman]]) said "When people ask me for references on category theory, I say 'you always learn category theory from the second book you end up reading'",
@@ -96,4 +130,4 @@ Even though natural transformations may be intimidating at first, it is simply a
 
 [fn:1] Here I take $ob(C)$ to mean the objects of the category $C$.
 [fn:2] Here I take $mor(X,Y)$ to mean the morphisms between the objects $X$ and $Y$ in the category $C$.
-[fn:3] If you aren't familiar with modules, replace all instances with "R-module" with "vector space".
+[fn:3] If you aren't familiar with modules, replace all instances with "R-module" with "vector space" or "abelian group".
