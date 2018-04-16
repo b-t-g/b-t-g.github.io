@@ -26,11 +26,11 @@ to the "homomorphism of functors" viewpoint, this post unwinds that analogy a bi
 
 * What is a homomorphism, really?
 At its core, a homomorphism is just a map which preserves the structure of its argument. For example, a group homomorphism is a map which sends groups to groups,
-a "category homomorphism" (functor) sends categories to categories, etc. More generally, for an arbitrary category $C$, if, for two objects $X,Y\in ob(C)$[fn:1], there is a morphism $f:X\to Y$
-means that $Y$ has the same structure as $X$. Even though that last point sounds like a needless abstraction, that insight will be useful later.
+a "category homomorphism" (functor) sends categories to categories, etc. More generally, for an arbitrary category $C$, if there exists a morphism $f: X\to Y$, where $X,Y\in\ ob(C)$[fn:1]
+then we generally think of $Y$ as having the same structure as $X$ within $C$. Even though that last point sounds like a needless abstraction, that insight will be useful later.
 
-With this in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from a category $C$,
-I'll give you an object from category a $D$. Similarly, you give me a morphism from $C$, I'll give you a morphism from $D$. In short, we will show that a natural
+With this in mind, what is the structure of a functor? It's a strange question with a straightforward answer: you apply it. You give me an object from a category $X\in ob(C)$,
+I'll give you an object $F(X)\in ob(D)$. Similarly, you give me a morphism $f: X\to Y$ where $X,Y\in ob(C)$, I'll give you a morphism from $F(f): F(X)\to F(Y)$. In short, we will show that a natural
 transformation is a way to say that one functor has the same structure as another.
 
 * Natural transformations
