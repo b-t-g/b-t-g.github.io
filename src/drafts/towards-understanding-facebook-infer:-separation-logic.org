@@ -1,0 +1,137 @@
+#+STARTUP: showall
+#+STARTUP: hidestars
+#+OPTIONS: H:2 num:nil tags:nil toc:nil timestamps:t
+#+LAYOUT: post
+#+AUTHOR: Brendan Good
+#+DATE: 2018-04-26 Thu 10:53
+#+TITLE: Towards Understanding Facebook Infer Separation Logic
+#+DESCRIPTION: Here we'll take the first step towards understanding infer The underlying axiomatic semantics
+#+TAGS: infer,facebook,static analysis,programming languages
+#+CATEGORIES: static analysis
+
+#+LATEX_HEADER: \usepackage{amsfonts}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amscd}
+# For llbracket and rr bracket
+#+LATEX_HEADER: \usepackage{stmaryrd}
+
+* Infer
+[[https://github.com/facebook/infer][Infer]] by Facebook is a static analyzer that can reason about shared mutable data structures. This was fascinating to me from the outset and I wanted to learn a bit more. Diving more
+deeply into it, I discovered that there's quite a lot to learn! According to the [[http://fbinfer.com/docs/separation-logic-and-bi-abduction.html][infer docs]], the technical heart of infer is outlined in [[http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/localreasoning.pdf][this paper (separation logic)]] and [[http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/jacm-abduction-webversion.pdf][this paper (bi-abduction)]].
+In this series of posts, I will give an outline of these two papers. There are other papers which talk about separation logic, but I have found the one linked to be the easiest one to read and
+learn from.
+
+This is a pretty notation heavy post, so strap yourself in!
+
+* Separation Logic: Historical Context
+Separation logic, as implied by the title of the first linked paper by O'hearn, Reynolds, and Yang (which I will to as "the paper" from now on), solves the problem of reasoning axiomatically
+about programs that alter data structures. Axiomatically working with pointers is difficult because they can, in principle, change the behavior of syntatically independent pieces of code
+(imagine many pointers pointing to the same address and one of those pointers changing the value).
+
+The driving force behind separation logic is the observation that programmers think about the local effects of their program, so locally reasoning about state can yield meaningful
+insights.
+
+Overall, I found the paper to be quite readable on its own, even as a complete newcomer to static analysis and formal semantics. There were, however, some pitfalls that I
+encountered (especially around unfamiliar notation) that I'll work through.
+
+* Disclaimer: We're still in formal verification territory
+  Separation logic is an axiomatic framework for reasoning shared mutable state; this is very useful but we're still in the realm of formal verification. This means that its statements are of the form
+"If some precondition $P$ is true and then run command $C$, then some postcondition $Q$" will be true. What does that mean for us? This means that, if we want to analyze our program using
+separation logic, then we'll have to add a bunch of preconditions and postconditions to our functions, which is not terribly convenient. Not all is lost! The bi-abduction paper will talk about how to
+infer these pre and post conditions so that we can statically analyze our program without adding annotations.
+
+* Preliminary Notation
+Before we even get started, it will be useful to introduced some notation which is assumed in the paper:
+
+** Hoare Logic
+*** Hoare Triple
+Syntactically, a Hoare triple is ${P}C{Q}$; semantically, this means "If some precondition $P$ is true and then run command $C$, then some postcondition $Q$" will be true. Some concrete
+examples of this will be given later in this post.
+
+*** "Contents of" Operator
+For a pointer $E$, $[E]$ means "contents of $E$". This is not to be confused with $E[x/y]$ which means "in the expression $E$, replace each [[https://en.wikipedia.org/wiki/Free_variables_and_bound_variables][free instance]] of $y$ with $x$".
+
+* Model
+The paper then goes on to describe the model: (where := means "defined to be")
+- $Ints := {\cdots, -1, 0, 1}$
+- $Variables := {x,y,\cdots}$
+- $Atoms, Locations\subseteq Ints$
+- $Atoms\cap Locations = {},\ nil\in Atoms$
+- $Stores := Variables\rightharpoonup Ints$
+- $Heaps := Locations\rightharpoonup Ints$
+- $States := Stores\times\ Heaps$
+
+
+Now that we have defined what a store is, we define one more piece of preliminary notation: $\llbracket E \rrbracket s$ means evaluate expression $E$ with store $s$ (i.e., replace the free variables
+in $E$ with their corresponding value in $s$).
+
+New we define the grammar for arithmetic expressions is as follows:
+
+\[E, F, G ::= x,y,\cdots | 0 | 1 | E+F | E\times F | E-F\]
+
+There is a lack of arbitrary integers. Semantically, this isn't an issues since $n$ can be represented by $1 + 1 + \cdots + 1$ $n$ times.
+
+The grammar for boolean expressions is as follows:
+
+\[B, B' ::= false | B\Rightarrow B' | E = F | E < F | isatom?(E) | isloc?(E) \]
+
+Now we'll talk about the grammar of separation logic itself. We haven't talked about what $E\mapsto F$ means
+or the entire bottom row, but we'll describe their semantics in the following section.
+
+\begin{align*}
+P,Q,R ::=\ &B\ \vert\ E\mapsto F \text{ Atomic Formulae} \\
+          &\vert\ false\ \vert\ P\Rightarrow Q\ \vert\ \forall x.P \text{ Classical Logic} \\
+          &\vert\ emp\ \vert\ P * Q\ \vert\ P -* Q
+\end{align*}
+
+The semantics the classical logic follow exactly the rules we're used to for such statements ($P = \neg P = false, P\bigvee Q = (\neg P)\rightarrow Q, etc$).
+Before we go into the semantics of the new symbols, we'll define more notation.
+
+- $dom(h)$ means the domain of definition of a heap $h$ and $dom(s)$ means the domain of definition
+for a store $s$.
+- $h\#h'$ means that the domains of the two heaps $h$ and $h'$ are disjoint.
+- $h*h'$ denotes the disjoint union of two heaps (this is not the same notation as P*Q mentioned above).
+- (f | i\mapsto j) means "take $f$ but make $i$ map to $j$ instead". Since this is primarily used for partial functions (i.e., only some of its
+input has a valid output), this is a way to extend the domain of definition for $f$
+- We define $s,h\models P$ to mean an assertion $P$ holds for for a given store $s$ and heap $h$ (and $Free(P)\subseteq dom(s)$ where $Free(P)$ means the
+free variables of $P$).
+
+* Semantics
+1) $s,h\models B\ \ \ \ \ \ \text{ iff } \llbracket B \rrbracket s = true$ (in particular $s,h\models E = F\text{ iff } \llbracket E\rrbracket s = \llbracket F\rrbracket s$)
+2) $s,h\models E\mapsto F \text{ iff } {\llbracket E\rrbracket s} = dom(h)\text{ and } h(\llbracket E\rrbracket s) = \llbracket F \rrbracket s$
+3) $s,h\models false\ \ \text{ never}$
+4) $s,h\models P\Rightarrow Q\text{ iff if } s,h\models P\text{ then } s,h\models Q$
+5) $s,h\models \forall x.P\ \ \ \text{ iff } \forall v\in Ints.[s|x\mapsto v],h\models P$
+6) $s,h\models emp\ \ \ \ \text{ iff } h = []\text{ is the empty heap}$
+7) $s,h\models P*Q\ \ \text{ iff }\exists h_0,h_1.h_0\#h_1, h_0*h_1 = h, s,h_0\models P\text{ and } s,h_1\models Q$
+8) $s,h\models P-*Q\text{ iff }\forall h'.\text{ if } h'\# h\text{ and } s,h'\models P,\text{ then } s,h*h'\models Q$
+
+1, 3, 4, and 6 are fairly self-explanatory but I'll explain the rest.
+
+** Rule 2
+This rule amounts to "If we evaulate $E$ with store $s$ and the result is precisely the domain of our heap $h$ (in particular, there is nothing else on the heap) and we apply
+the heap function to the result, we'll get the expression $F$ evaluated with the same store."
+
+** Rule 5
+This rule means that for any $x\in Free(P)$, then the statement is true for any value of $x$. For example $\forall x. x+1 > 1$: We can substitute any integer for $x$ and we will get a true statement.
+
+** Rule 7
+This rule means that we can decompose our heap $h$ into two disjoint heaps (where the disjoint union of those heaps yields $h$), then $s,h_0\models P$ and $s,h_1\models Q$, which is to say that
+we can model $P$ and $Q$ using disjoint heaps.
+
+** Rule 8
+This rule is a bit trickier. This rule states that if we can find a heap $h'$ that is disjoint from $h$ such that $s,h'\models P$, then $s,h*h'\models Q$, which is to say that if we can find
+a heap $h'$ which is disjoint from $h$ such that $s,h'\models P$ then extending our heap $h$ by $h'$ (via the disjoint union), then we satisfy $Q$ as well.
+
+** Syntactic sugar
+\begin{align*}
+$E\mapsto F_0,\cdots,F_n &:= (E\mapsto F_0)*\cdots * (E + n\mapsto F_n)$ ($E$ is a pointer so $E+n$ means the n'th offset of $E$) \\
+$E\doteq F &:= (E = F)\wedge emp$, in particular $(E\doteq F)*P\Leftrightarrow (E = F)\wedge emp$ \\
+$E\mapsto - &:= \exists y.E\mapsto y$
+\end{align*}
+
+Heap surgery: The integer index of the symbol pointing to the old symbol table is replaced by the integer
+index that we just learned as being its location in the new symbol table.
+
+${P}C{Q}\Rightarrow {P*R}C{Q*R}$ where $C$ is heap surgery. This means that heap surgery does not affect unrelated parts of the program.
