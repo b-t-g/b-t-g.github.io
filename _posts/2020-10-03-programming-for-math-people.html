@@ -1,0 +1,126 @@
+---
+date: 2020-10-03 14:43
+author: Brendan Good
+layout: post
+title: Programming for mathematicians*
+excerpt: ""
+tags: 
+- ""
+categories: 
+- ""
+---
+<p>
+&lowast; Where "mathematician" (generously) means "someone who has at least a bachelors degree proof-based mathematics and primarily self-taught at programming"
+</p>
+
+<p>
+In my final years in college when discussing my career plans switching from pure math academia to programming, people would typcially respond with "Ah. You're good at math, so programming will be easy for you."<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> This was not true. There are areas where I struggled and I struggled hard. In this post, I'll go over the lessons I learned to help you become more productive faster as a programmer.
+</p>
+
+<div id="outline-container-org95fdeab" class="outline-2">
+<h2 id="org95fdeab">Algorithms aren't everything</h2>
+<div class="outline-text-2" id="text-org95fdeab">
+<p>
+After learning the basic syntax of a programming language, you might look into algorithms. After all, it's the easiest to pick up since it resemble math the most, and you'll be drilled on it during interviews. Makes sense! However, beware when beginning your journey as a programmer, real world programming is not so tidy. There's more to the performance of a system than big O analysis, you need to know the context in which computation is happening and sometimes even the underlying OS and hardware properties that affect performance.
+</p>
+
+<p>
+Two excellent articles that illustrate these points well are:
+</p>
+
+<ol class="org-ol">
+<li><a href="https://queue.acm.org/detail.cfm?id=2984631">This one</a>, which demonstrates understanding the context in which your computation occurs can yield much better results than simple big O analysis would imply.</li>
+<li><a href="https://queue.acm.org/detail.cfm?id=1814327">This one</a>, which gives an example where knowing the specific characteristics of your program and how it relates to the underlying OS/hardware can improve performance by an order of magnitude over the "optimal" choice.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org5c78664" class="outline-2">
+<h2 id="org5c78664">Programming is "sloppier" than math</h2>
+<div class="outline-text-2" id="text-org5c78664">
+<p>
+This is the problem that I struggled the most with. As opposed to math which had these tidy axioms that I could use to create examples and prove theorems, the real world is much messier. Instead of axioms, you have requirements; some are implicit, some were created in the context of previous requirements and the reasons behind the change aren't recorded, and some of have simply been lost to the sands of time. By comparison, even the hairy constructions done in analysis or topology looked simple!
+</p>
+
+<p>
+Expecting to be able to break out the tools you used to tackle math will lead to frustration. This sloppier kind of thinking requires navigating the labyrinth of requirements, understanding the precedent of previous decisions, and working within their intent is something that I'd imagine resembles law moreso than math<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>. As such, you need other ways to adapt to the uncertainty. This leads me to my last point.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcce5298" class="outline-2">
+<h2 id="orgcce5298">Use your secondary strengths</h2>
+<div class="outline-text-2" id="text-orgcce5298">
+<p>
+One of your strengths from doing proof-based mathematics is (or at least should be) being able to break down complicated ideas down into their constituent parts and laying them out in a logical way. Don't underestimate this skill and use it to your advantage.
+</p>
+
+<p>
+When struggling with the uncertainty of the sloppiness of programming, write down a proposed solution. This can either be a formal spec for a whole system or just a "this is the general outline of what I intend to do". If you're feeling daring, you can write a <a href="http://lamport.azurewebsites.net/tla/tla.html">TLA+</a> spec. Doing this on the job may not seem intuitive since many of your programmer colleagues will likely be more comfortable with the "sloppy systems" reasoning and hence not feel the need for such steps for all but the most difficult tasks. However, this approach has had several advantages in my experence:
+</p>
+</div>
+
+<div id="outline-container-orgbdaabe4" class="outline-3">
+<h3 id="orgbdaabe4">It lets you think in a way you're already familiar with.</h3>
+<div class="outline-text-3" id="text-orgbdaabe4">
+<p>
+When sticking with just (non-executable) words on a page instead of code, I feel free to enter "math mode" and explore ideas in a relatively safe way instead of the panicking mode that I enter when I don't immediately know what to do. Ideas are cheap, you can create them, modify them, and throw them away pretty easily; code isn't as pliable, in my experience.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb020d5f" class="outline-3">
+<h3 id="orgb020d5f">It lets others help with the "sloppy" thinking</h3>
+<div class="outline-text-3" id="text-orgb020d5f">
+<p>
+Having your intentions written down helps you to "offload" the "sloppy systems thinking" to people who already have experience with the system and can point out the shortcomings in whatever it is that you wrote before you've written any code. As time progresses, you will be able to think about the system "on its own terms" as well, but this approach is very helpful in the beginning.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org24755bc" class="outline-3">
+<h3 id="org24755bc">It states your intention</h3>
+<div class="outline-text-3" id="text-org24755bc">
+<p>
+It makes life for those who come after you. You are giving your perspective, context, and high-level implementation details for whoever has to work in your codebase next. This is just a nice thing to have; you may even benefit from it later!
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga533cb5" class="outline-3">
+<h3 id="orga533cb5">It gives you a more unique skill-set</h3>
+<div class="outline-text-3" id="text-orga533cb5">
+<p>
+As I stated before, your colleagues may not do this because they are more comfortable with reasoning within the system. However, this means that they may not be as comfortable with laying out how a system works for others to understand. If you become good at doing this, it may give you opportunities to work on more complicated projects that require more forethought. It may also give you room to grow in other directions into other career directions, if you choose.
+</p>
+
+<p>
+And you don't even have to take my word for it, I got some of these ideas from Turing-award winner Leslie Lamport (specifically <a href="https://youtu.be/-4Yp3j_jk8Q?t=135">this talk</a>).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org30e077f" class="outline-2">
+<h2 id="org30e077f">Conclusion</h2>
+<div class="outline-text-2" id="text-org30e077f">
+<p>
+The transition from math to programming may not be as smooth as you'd like, but as long as you acknowledge that, don't eschew things that aren't easy, embrace the "real world", and use all of your strengths (even indirect, not strictly technical ones), you may have a smoother transition than I did.
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+This was told to me not just by math elitists, but by people who were knowledgable about programming as well!
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+I am not a lawyer.
+</p></div></div>
+
+
+</div>
+</div>
