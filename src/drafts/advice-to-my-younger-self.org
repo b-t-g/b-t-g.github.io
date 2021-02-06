@@ -5,9 +5,9 @@
 #+AUTHOR: Brendan Good
 #+DATE: 2020-12-12 Sat 12:15
 #+TITLE: Advice to my younger self (as a programmer)
-#+DESCRIPTION: 
-#+TAGS: 
-#+CATEGORIES: 
+#+DESCRIPTION: I talk about my mistakes both technical and otherwise
+#+TAGS: job advice
+#+CATEGORIES: job advice
 
 I've learned a lot of things the hard way in the few years that I've been working. Some obvious in retrospect, others more subtle. Here, I'll just outline my biggest
 mistakes, why I think they were mistakes, and how I fixed them.
@@ -39,7 +39,7 @@ mistakes, why I think they were mistakes, and how I fixed them.
   I used to worry about finding open source projects to contribute to and it ended up causing undue stress. I ended up making some contributions and starting
   some side projects and nobody cared. It was fun but ultimately useless as a career-advancing move. If you find them fun or you have an idea for some side project
   or feature for an existing open source project, go for it, but don't stress out about them. Maybe these kinds of things are more valued in the Bay Area
-  (I started my career in New York City), but no one about them at all it in my experience.
+  (I started my career in New York City), but no one cared about them at all it in my experience.
 
 * On the job (non-technical)
 ** Understand what managers and tech leads (are supposed to) do
