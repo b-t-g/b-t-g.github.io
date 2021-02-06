@@ -1,0 +1,90 @@
+#+STARTUP: showall
+#+STARTUP: hidestars
+#+OPTIONS: H:2 num:nil tags:t toc:nil timestamps:t
+#+LAYOUT: post
+#+AUTHOR: Brendan Good
+#+DATE: 2020-12-12 Sat 12:15
+#+TITLE: Advice to my younger self (as a programmer)
+#+DESCRIPTION: 
+#+TAGS: 
+#+CATEGORIES: 
+
+I've learned a lot of things the hard way in the few years that I've been working. Some obvious in retrospect, others more subtle. Here, I'll just outline my biggest
+mistakes, why I think they were mistakes, and how I fixed them.
+
+* Interviews/Getting a job
+** How to get better at interviews
+*** "Tell me about yourself" pre-screen
+   I used to be god awful at these. I would give this dry, pseudo-biographical statement about my educational and professional background. That's dumb and no one wants to hear that. Instead,
+   tell a story about your interest as a programmer, what do you like about it, what do you value that other candidates might not? In my case, I now talk
+   about my interest in debuggable systems and documentation. No need to give an autobiographical speech, just talk about what you find important and how you got there.
+
+*** Drill fundamental data structures over fancy algorithms
+   In my case, knowing even somewhat fancy algorithms like Floyd-Warshal's all-pairs shortest path ended up being a detriment to me in interviews.
+   Instead, knowing the fundamental data structures and where they fit best has been much more useful. Some problems seem completely impenetrable
+   until you realize that a heap is the correct data structure. In short, know your basic data structures, your basic algorithms, how they fit together,
+   and you'll be golden on algorithm interviews as a new hire to mid-level engineer at the very least.
+
+*** Ask questions and think out loud more
+   Especially when struggling to find an approach, saying what I was thinking and asking questions became more useful over time. Sometimes interviewers are genuinely
+   uninterested and just want to ask you trivia and don't want to respond to your statements and questions, but that's also good to know because you now know you
+   don't want to work there!
+
+*** Conduct interviews as an interviewer when you get the chance
+   The biggest thing for my confidence during interviews was conducting many interviews as an interviewer. By sitting on the other side of the table, I was able to
+   relax substantially. Interviews stopped being a life-or-death situation and just became another day in the office. After that, I was able to relax a lot more
+   when I was the interviewee.
+
+** Don't worry about open source contributions and side projects
+  I used to worry about finding open source projects to contribute to and it ended up causing undue stress. I ended up making some contributions and starting
+  some side projects and nobody cared. It was fun but ultimately useless as a career-advancing move. If you find them fun or you have an idea for some side project
+  or feature for an existing open source project, go for it, but don't stress out about them. Maybe these kinds of things are more valued in the Bay Area
+  (I started my career in New York City), but no one about them at all it in my experience.
+
+* On the job (non-technical)
+** Understand what managers and tech leads (are supposed to) do
+  Fundamentally, managers are responsible for making their teams more efficient and should be empowered to do so. This one took me an embarrassingly long time to understand. I now have an exceedingly
+  good manager who both exercises this practice and hammers home that this is what she's doing. Tech leads should be similar, just at a more technical level: "How does this part of the code base work,"
+  "I'm trying to decide how to implement this feature", etc.,
+
+*** Recoginize when Managers can't do what they're supposed to do
+   Sometimes managers are institutionally unempowered and at best can only act as a shield from the more unsavory parts of the organizations, sometimes managers don't care,
+   or sometimes they just don't know how to make teams more efficient. It's important to recognize situations when this isn't the case and act accordingly.
+
+** Embrace your unique skills instead of trying to emulate coworkers
+  This goes along nicely with my previous post "Programming for mathematicians*". I'd see people that were successful in the company and try to emulate whatever they did.
+  The problem with that is, I didn't necessarily know precisely how they worked, how they got there, or anything else. As a result, I ended up imitating whatever it
+  is they did poorly. Instead, I should have embraced my own strengths and become successful within the company my own way.
+
+*** Fully understand what work you're doing 
+   In particular, in trying to emulate my coworkers, it was tempting to try to get work done as fast as my coworkers early on in my career.
+   However, this ended up being very limiting and making my job less enjoyable. If you have trouble with this, ask your tech lead or manager for guidance!
+   
+   Taking time to fully understand what my code is doing on a level deeper than a superficial level is valuable for many reasons (in roughly ascending order of importance):
+
+**** It makes the work more fun.
+	Each unit of work becomes an opportunity a learn how the overall system works. I find learning things fun, so this is a big win.
+
+**** It makes you more efficient in the long run.
+	You gain a deeper understanding in the code base which in turn gives you more context about how to make new changes faster.
+
+**** It makes you faster right now.
+	You'll make fewer stupid mistakes that you'll need to fix in code review and burn at least one code review cycle; possibly even more if you
+	don't fully understand the code review comments, either.
+	
+	
+* On the job (technical-ish)
+** Make your code easier to review
+  Making PRs easier to review makes everyone's lives easier
+*** Break up PRs into individual commits that are easier to digest
+   Reading a huge list of changes without entirely being sure how pieces precisely fit together is difficult. Instead, break up your PR where it makes sense into individual commits.
+   Even if you squash them together when you merge, it makes reviewing easier, which in turn gives you more helpful comments and you learn more. To better facilitate this,
+   I pretty much always run =git add -p= (or some equivalent depending on the editor that I use) to only get precisely the changes that make sense together in a single commit.
+
+   Also, if your PR ends up changing a lot, try to squash, rearrange, and sometimes delete commits so that it's still easy to review commit by commit. =git rebase= is an intimidating
+   but very useful command here.
+   
+*** Specifically add comments on questions that you might have about your code
+   When I create a PR, I tend to add a comment in the PR itself the questions that I may have. It might be "I want to implement this, but I'm stuck," "Is this the best way to accomplish
+   the thing I want to do," "Is this idiomatic," etc.,
+
