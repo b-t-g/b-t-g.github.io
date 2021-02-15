@@ -36,7 +36,7 @@ mistakes, why I think they were mistakes, and how I fixed them. Some of them are
 
 
    Given how diverse these interviews can be, it has been invariably better in my experience to start as simply as possible and let the interviewers control where
-   the interviews goes so that they get the signal that they're looking for.
+   the interviews go so that they get the signal that they're looking for.
 
    That said, if you have interesting experience that you can refer to, bring it up! Interviewers may find it interesting and choose to move along in that direction.
 
