@@ -13,7 +13,7 @@ categories:
 ---
 <p>
 I've learned a lot of things the hard way in the few years that I've been working. Some obvious in retrospect, others more subtle. Here, I'll just outline my biggest
-mistakes, why I think they were mistakes, and how I fixed them.
+mistakes, why I think they were mistakes, and how I fixed them. Some of them are specific to me and my experience, and most are specific to programming, but hopefully may be useful to others.
 </p>
 
 <div id="outline-container-orgc93d2f0" class="outline-2">
@@ -38,11 +38,38 @@ about my interest in debuggable systems and documentation. No need to give an au
 <li><a id="orga289e31"></a>Drill fundamental data structures over fancy algorithms<br />
 <div class="outline-text-4" id="text-orga289e31">
 <p>
-In my case, knowing even somewhat fancy algorithms like Floyd-Warshal's all-pairs shortest path ended up being a detriment to me in interviews.
-Instead, knowing the fundamental data structures and where they fit best has been much more useful. Some problems seem completely impenetrable
-until you realize that a heap is the correct data structure. In short, know your basic data structures, your basic algorithms, how they fit together,
+In my case, knowing even somewhat fancy algorithms like Floyd-Warshal's all-pairs shortest path ended up being a detriment to me in interviews. It dragged my
+thinking into "What general algorithm solves this problem," instead of the more desirable "How do I most efficiently solve this specific problem?"
+Instead, knowing the fundamental data structures and what they do best has been much more useful. Some problems seem completely impenetrable
+until you realize that a heap is the correct data structure. In short, know your basic data structures, your basic algorithms, and how they fit together,
 and you'll be golden on algorithm interviews as a new hire to mid-level engineer at the very least.
 </p>
+</div>
+</li>
+
+<li><a id="orgd410dba"></a>Start as simply as possible in "System design" interviews<br />
+<div class="outline-text-4" id="text-orgd410dba">
+<p>
+System design interviews tend to be the most diverse in terms of what the interviewer is looking for. I've seen the intent of these questions range from:
+</p>
+<ol class="org-ol">
+<li>Are you comfortable with "the big picture" when thinking about systems?</li>
+<li>Are you familiar with methods of handling certain, common, performance problems?</li>
+<li>How would you construct a system that is easy to maintain?</li>
+<li>Can you construct systems that evolve over time as requirements change?</li>
+<li><p>
+Are you the kind of person who over-engineers things!
+</p>
+
+<p>
+Given how diverse these interviews can be, it has been invariably better in my experience to start as simply as possible and let the interviewers control where
+the interviews goes so that they get the signal that they're looking for.
+</p>
+
+<p>
+That said, if you have interesting experience that you can refer to, bring it up! Interviewers may find it interesting and choose to move along in that direction.
+</p></li>
+</ol>
 </div>
 </li>
 
@@ -66,6 +93,18 @@ when I was the interviewee.
 </div>
 </li>
 </ul>
+</div>
+
+<div id="outline-container-org6e1929c" class="outline-3">
+<h3 id="org6e1929c">Tech stacks are the least important part of enjoying a job</h3>
+<div class="outline-text-3" id="text-org6e1929c">
+<p>
+This was much more of a problem very early in my career. It doesn't really matter if a company uses Haskell, Java, Rust, or PHP; if you deal with bad management, toxic coworkers, or
+simply a place where your values and the company's values don't line up, it fundamentally doesn't matter whether you deal with shiny tech. Sure it might make things better if all
+other things are equal, but they rarely ever are. For example, I started my current job as a skeptic of Golang. While it still isn't a programming language that I'd use for fun,
+it doesn't stop this job from being my favorite job that I've had so far. Don't compromise on things like management or potential coworkers because of a shiny tech stack.
+</p>
+</div>
 </div>
 
 <div id="outline-container-org2090aed" class="outline-3">
@@ -96,8 +135,8 @@ good manager who both exercises this practice and hammers home that this is what
 </div>
 
 <ul class="org-ul">
-<li><a id="orgee47e69"></a>Recoginize when Managers can't do what they're supposed to do<br />
-<div class="outline-text-4" id="text-orgee47e69">
+<li><a id="orga4a9518"></a>Recognize when Managers can't do what they're supposed to do<br />
+<div class="outline-text-4" id="text-orga4a9518">
 <p>
 Sometimes managers are institutionally unempowered and at best can only act as a shield from the more unsavory parts of the organizations, sometimes managers don't care,
 or sometimes they just don't know how to make teams more efficient. It's important to recognize situations when this isn't the case and act accordingly.
