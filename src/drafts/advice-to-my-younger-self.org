@@ -34,6 +34,7 @@ mistakes, why I think they were mistakes, and how I fixed them. Some of them are
 4. Can you construct systems that evolve over time as requirements change?
 5. Are you the kind of person who over-engineers things!
 
+
    Given how diverse these interviews can be, it has been invariably better in my experience to start as simply as possible and let the interviewers control where
    the interviews goes so that they get the signal that they're looking for.
 
